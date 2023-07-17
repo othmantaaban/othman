@@ -1,0 +1,113 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import '@ionic/angular/css/display.css';
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800;900&display=swap');
+* {
+  --ion-font-family: 'Manrope', sans-serif;
+
+  --ion-background-color: white;
+
+  --ion-text-color: black;
+
+  --ion-toolbar-background: white;
+}
+
+
+
+
+ion-toolbar {
+  --border-width: 0 !important;
+}
+
+
+ion-alert.demandAlerts {
+  .Enregistrer {
+    flex: 1;
+    transition: .5s;
+    background-color: #515ED4 !important;
+    border-radius: 30px !important;
+    height: 59px;
+    width: 90%;
+    max-width: 300px;
+    min-width: 200px;
+    margin: auto !important;
+    color: white !important;
+    span {
+      justify-content: center !important;
+      font-size: 14px;
+      text-transform: capitalize;
+    }
+  }
+  .alert-wrapper {
+    display: none;
+    .alert-head {
+      display: none;
+    }
+
+    .alert-radio-group  {
+      border: 0;
+    }
+    .alert-radio-group {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 10px;
+      .alert-radio-button  {
+        background-color: #F0F0F0 !important;
+        border-radius: 17px !important;
+        height: 59px;
+        width: 90%;
+        max-width: 300px;
+        min-width: 200px;
+        margin: auto !important;
+        color: white !important;
+      }
+    }
+  }
+}
+
+
+.devoirToast {
+  --box-shadow: 3px 3px 10px 0 rgba(0, 0, 0, 0.2);
+  --color: white;
+  &.valide {
+    --background: #22C09A;
+  }
+  &.nvalide {
+    --background: #FF5050;
+  }
+  &::part(message) {
+    font-weight: 700;
+    font-size: 20px;
+  }
+
+  &::part(icon) {
+    font-size: 30px;
+  }
+}

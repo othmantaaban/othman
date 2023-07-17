@@ -1,0 +1,7 @@
+{
+  "name": "founder_v3_test",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

@@ -1,0 +1,149 @@
+<ion-accordion-group class="grand-parent" #demandAccordion (ionChange)="getDemandeContent()">
+  <ion-grid class="dash-grid">
+    <ion-row class="header-title">
+      <ion-col size="12">
+        <ion-title mode="md" class="title-style">
+          Demandes non valider
+        </ion-title>
+      </ion-col>
+    </ion-row>
+    <ion-row class="demande">
+      <ion-col
+        class="demande-col-parent"
+        size-sm="12"
+        size-lg="6"
+        *ngFor="let demande of demandesList"
+      >
+        <ion-accordion [value]="demande.Id">
+          <div class="accordion-header" slot="header" (mousedown)="$event.preventDefault()">
+            <ion-img [src]="demande.image"></ion-img>
+            <div class="info">
+              <p class="name">
+                {{ demande.userName }}
+                <span class="group-style group" *ngIf="demande.isEleve">{{ demande.isEleve }}</span>
+                <span class="group-style enseignant" *ngIf="!demande.isEleve">ensaignant</span>
+              </p>
+              <p class="mini-content">
+                <span class="first"> {{ demande.nature }} </span>
+                <span class="date"> {{ demande.date }} </span>
+              </p>
+            </div>
+            <div class="icon">
+              <ion-icon
+                name="chevron-down-outline"
+                class="ion-accordion-toggle-icon arrow"
+              ></ion-icon>
+            </div>
+          </div>
+          <div slot="content" class="accordion-content">
+            <div class="demandes">
+              <div class="text-content" *ngFor="let ctn of demandeContent['content']">
+              </div>
+              <!-- <ion-item>
+                <ion-button
+                  [id]="'present-alert-' + item.id"
+                  class="btn-alert"
+                  [class]="item.val === null ? 'default' : item.val === 'EnCours' ? 'EnCours' : 'Bloquer'"
+                >
+                  <div class="btn-alert-ctn">
+                    <div class="text-ctn" *ngIf="item.val === null"
+                      >État de la demande</div>
+                    <div class="text-ctn" *ngIf="item.val === 'EnCours'">
+                      <ion-icon class="icon" name="time-outline"></ion-icon>
+                      En cours
+                    </div>
+                    <div class="text-ctn" *ngIf="item.val === 'Bloquer'">
+                      <ion-icon class="icon" name="ban-outline"></ion-icon>
+                      Bloquer
+                    </div>
+                    <ion-icon name="chevron-down-outline" class="downArrow"></ion-icon>
+                  </div>
+                </ion-button>
+                <ion-alert
+                  [trigger]="'present-alert-' + item.id"
+                  class="demandAlerts"
+                >
+                  <div class="content">
+                    <div class="alert-header">
+                      <ion-title>Choisir l’état de la demande</ion-title>
+                      <ion-buttons class="buttons">
+                        <ion-button (click)="closeAlert()">
+                          <ion-icon name="close"></ion-icon>
+                        </ion-button>
+                      </ion-buttons>
+                    </div>
+                    <div class="main">
+                      <ion-radio-group
+                        [allowEmptySelection]="true"
+                        [value]="null"
+                        (ionChange)="willRadioChange($event)"
+                      >
+                        <ion-radio value="EnCours" class="btn enCours">
+                          <div class="labelContent">
+                            <ion-icon
+                              class="icon"
+                              name="time-outline"
+                            ></ion-icon>
+                            En cours
+                          </div>
+                        </ion-radio>
+                        <ion-radio value="Bloquer" class="btn bloquer">
+                          <div class="labelContent">
+                            <ion-icon
+                              class="icon"
+                              name="ban-outline"
+                            ></ion-icon>
+                            Bloquer
+                          </div>
+                        </ion-radio>
+                      </ion-radio-group>
+                      <ion-buttons>
+                        <ion-button
+                          class="btn register"
+                          (click)="setChecked(item.id)"
+                          >register</ion-button
+                        >
+                      </ion-buttons>
+                    </div>
+                  </div>
+                </ion-alert>
+              </ion-item> -->
+              <ion-radio-group [(ngModel)]="radioValue">
+                <ion-radio value="end" mode="md" labelPlacement="end">
+                  Affecter à un collaborateur
+                </ion-radio>
+              </ion-radio-group>
+              <ion-button
+                class="buttons list-collab"
+                *ngIf="radioValue === 'end'"
+              >
+                <ion-img src="assets/Ellipse1.png" slot="start"></ion-img>
+                <span class="content"> Hassan Alami </span>
+                <ion-icon
+                  name="chevron-down-outline"
+                  class="icon"
+                  slot="end"
+                ></ion-icon>
+              </ion-button>
+              <ion-textarea
+                class="comment"
+                auto-grow="true"
+                placeholder="comment"
+              ></ion-textarea>
+            </div>
+            <ion-footer mode="md">
+              <ion-button shape="round" fill="clear">Annuler</ion-button>
+              <ion-button shape="round" fill="clear">valider</ion-button>
+            </ion-footer>
+          </div>
+        </ion-accordion>
+      </ion-col>
+    </ion-row>
+    <ion-row class="header-title">
+      <ion-col size="12">
+        <ion-title mode="md" class="title-style"> Demandes validés </ion-title>
+      </ion-col>
+    </ion-row>
+    <ion-row class="demande"> </ion-row>
+  </ion-grid>
+</ion-accordion-group>

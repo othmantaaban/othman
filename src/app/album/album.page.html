@@ -1,0 +1,135 @@
+<ion-accordion-group
+  class="grand-parent"
+  #albumAccordion
+  (ionChange)="getAlbumContent()"
+>
+  <ion-grid class="dash-grid">
+    <ion-row class="header-title">
+      <ion-col size="12">
+        <ion-title mode="md" class="title-style">
+          Albums photo à valider :
+        </ion-title>
+      </ion-col>
+    </ion-row>
+    <ion-row class="album">
+      <ion-col
+        class="album-col-parent"
+        *ngFor="let album of albums; let i = index"
+        size-sm="12"
+        size-lg="6"
+      >
+        <ion-accordion [value]="album.Id">
+          <div
+            class="accordion-header"
+            slot="header"
+            (mousedown)="$event.preventDefault()"
+          >
+            <div class="image">
+              <ion-img
+                src="assets/album/pic3.png"
+                class="albuToValide"
+                alt=""
+              ></ion-img>
+              <ion-img
+                src="assets/album/pic2.png"
+                class="albuToValide"
+                alt=""
+              ></ion-img>
+              <ion-badge mode="ios">
+                <ion-img src="assets/imageIcon.svg"></ion-img>
+                x{{ album.imageCount }}
+              </ion-badge>
+            </div>
+            <div class="info">
+              <p class="album-name">
+                {{ album.label }}
+                <span
+                  class="group-style group"
+                  *ngFor="let classe of album.classes"
+                  >{{ classe }}</span
+                >
+              </p>
+              <div class="mini-content">
+                <span class="par">
+                  Par <span class="name">{{ album.userName }}</span>
+                </span>
+                <span class="date"> {{ album.date }} </span>
+              </div>
+            </div>
+            <div class="time-icon">
+              <div class="icon">
+                <ion-icon
+                  name="chevron-down-outline"
+                  class="ion-accordion-toggle-icon arrow"
+                ></ion-icon>
+              </div>
+            </div>
+          </div>
+          <div slot="content" class="accordion-content">
+            <div class="album">
+              <div class="main" *ngIf="albumContent !== {}">
+                <ion-button
+                  class="navigation nextEl"
+                  (click)="goToNext('swiper' + i)"
+                >
+                  <ion-icon name="chevron-forward-outline"></ion-icon>
+                </ion-button>
+                <ion-button
+                  class="navigation prevEl"
+                  (click)="goToPrev('swiper' + i)"
+                >
+                  <ion-icon name="chevron-back-outline"></ion-icon>
+                </ion-button>
+                <ion-badge mode="ios" class="side-fractions">
+                  <ion-img src="assets/imageIcon.svg"></ion-img>
+                  <span>
+                    <span style="font-weight: bold">{{ activeIndex }}/</span>
+                    <span *ngIf="albumContent['images']">{{ albumContent['images'].length }}</span>
+                  </span>
+                </ion-badge>
+                <swiper-container
+                  [loop]="true"
+                  [id]="'swiper' + i"
+                >
+                  <swiper-slide *ngFor="let pic of albumContent['images']">
+                    <ion-img src="{{ pic }}" alt=""></ion-img>
+                    <ion-button class="remove" shape="round">
+                      <ion-icon name="trash-outline"></ion-icon>
+                    </ion-button>
+                  </swiper-slide>
+                  <!-- <swiper-slide>
+                    <ion-img src="assets/album/pic2.png" alt=""></ion-img>
+                    <ion-button class="remove" shape="round">
+                      <ion-icon name="trash-outline"></ion-icon>
+                    </ion-button>
+                  </swiper-slide>
+                  <swiper-slide>
+                    <ion-img src="assets/album/pic1.png" alt=""></ion-img>
+                    <ion-button class="remove" shape="round">
+                      <ion-icon name="trash-outline"></ion-icon>
+                    </ion-button>
+                  </swiper-slide> -->
+                </swiper-container>
+              </div>
+            </div>
+
+            <ion-footer mode="md">
+              <ion-button
+                shape="round"
+                fill="clear"
+                (click)="valideAlbum($event, album.Id, 'rejeter')"
+                >Annuler</ion-button
+              >
+              <ion-button
+                shape="round"
+                fill="clear"
+                (click)="valideAlbum($event, album.Id, 'validate')"
+                >Valider l’album</ion-button
+              >
+            </ion-footer>
+          </div>
+        </ion-accordion>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-accordion-group>

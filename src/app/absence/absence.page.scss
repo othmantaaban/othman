@@ -1,0 +1,94 @@
+.dash-grid {
+  .absence {
+    .absence-col-parent {
+      height: 150px;
+      border-bottom: 1px solid #DBDBDB;
+      @media (max-width: 1000px) {
+        & {
+          min-width: calc(100% - 10px);
+        }
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .class {
+          color: #12122C;
+          font-family: Manrope;
+          font-size: 20px;
+          font-weight: 700;
+          letter-spacing: -1px;
+        }
+
+        .date {
+          color: #9A9A9A;
+          font-family: Manrope;
+          font-size: 14px;
+          font-weight: 600;
+          letter-spacing: -0.7px;
+        }
+      }
+
+      .main {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .info {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          gap: 10px;
+          .pic {
+            &::part(image) {
+              width: 60px;
+              height: 60px;
+              border-radius: 50%;
+              margin-left: 20px;
+            }
+          }
+          .name {
+            color: #12122C;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: -0.48px;
+          }
+        }
+
+        .validation {
+          flex: 1;
+          display: flex;
+          justify-content: flex-end;
+          gap: 40px;
+          .parent-icon {
+            width: 55px;
+            height: 55px;
+            --border-style: solid;
+            --border-radius: 50%;
+            --background: white;
+            --border-width: 0.4px;
+            &::part(native) {
+              padding: 7px;
+            }
+            &.refuse {
+              --border-color: #F15959;
+              ion-icon {
+                font-size: 40px;
+                color : #F15959;
+              }
+            }
+
+            &.validate {
+              --border-color:#71DE56;
+              font-size: 40px;
+              ion-icon {
+                color: #71DE56;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

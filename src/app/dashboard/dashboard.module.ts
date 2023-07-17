@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { DashboardPageRoutingModule } from './dashboard-routing.module';
 
 import { DashboardPage } from './dashboard.page';
+import { PdfPage } from '../pdf/pdf.page';
 // import { NavbarPage } from '../navbar/navbar.page';
 
 @NgModule({
@@ -17,7 +18,8 @@ import { DashboardPage } from './dashboard.page';
     DashboardPageRoutingModule
   ],
   declarations: [
-    DashboardPage
+    DashboardPage,
+    PdfPage
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA

@@ -2,7 +2,6 @@
   #accordionGroup
   class="grand-parent"
   (ionChange)="getDevoirContent()"
-  (click)="runParentFunction()"
 >
   <ion-grid class="dash-grid">
     <ng-container *ngIf="!dataIsLoad">
@@ -36,18 +35,17 @@
                   ></ion-icon>
                 </p>
                 <div class="mini-content">
+                  <!-- size-sm="12" size-md="6" -->
                   <span class="par">
                     Par <span class="name"> {{ devoir.userName }} </span>
                   </span>
                   <span class="subject"> {{ devoir.Matiere }} </span>
-                  <!-- <div class="group-parent"> -->
                   <span
                     class="group-style group"
                     *ngFor="let classe of devoir.classes"
                   >
                     {{ classe }}
                   </span>
-                  <!-- </div> -->
                 </div>
               </div>
               <div class="time-icon">
@@ -82,11 +80,11 @@
                     <div class="fileName">
                       {{ devoirContent["file"].fileName }}
                     </div>
-                    <ion-icon name="eye-outline" class="fileBtn"></ion-icon>
+                    <ion-icon name="eye-outline" class="fileBtn" (click)="seePdf(devoirContent['file'].fileLink, devoirContent['file'].fileName)"></ion-icon>
 
                     <!-- <a [href]="devoirContent['file'].fileLink" [download]="devoirContent['file'].fileName"> -->
                     <ion-img
-                      (click)="downloadPic(devoirContent['file'].fileLink, devoirContent['file'].fileName)"
+                      (click)="downloadFile(devoirContent['file'].fileLink, devoirContent['file'].fileName)"
                       src="assets/downloads.svg"
                       class="fileBtn"
                     >
@@ -101,6 +99,7 @@
                     <ion-img
                       src="assets/downloads.svg"
                       class="fileBtn btnDown"
+                      (click)="downloadPic($event, devoirContent['file'].fileLink, devoirContent['file'].fileName)"
                     ></ion-img>
                     <ion-img
                       src="assets/montagnes.svg"
@@ -232,7 +231,7 @@
                       class="mainPic"
                     ></ion-img>
                     <ion-img
-                      (click)="downloadPic(devoirContent['file'].fileLink, devoirContent['file'].fileName)"
+                      (click)="downloadFile(devoirContent['file'].fileLink, devoirContent['file'].fileName)"
                       src="assets/downloads.svg"
                       class="fileBtn btnDown"
                     ></ion-img>

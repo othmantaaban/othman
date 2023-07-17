@@ -96,10 +96,25 @@ export class DevoirPage implements OnInit {
   }
 
 
-  downloadPic(fileUrl: string, name) {
+  downloadPic($event, fileUrl: string, name) {
+    $event.preventDefault();
+    
+    console.log("pic doz");
+    
+    this.file.downloadImage(fileUrl, name)
+  }
+
+  downloadFile(fileUrl: string, name) {
     this.file.downloadFile(fileUrl, name)
   }
 
+
+  seePdf(fileUrl, fileName : string) {
+    const type = fileName.split(".") 
+    if(type[1] === "pdf") {
+      this.notificationService.openIFrame(fileUrl, fileName)
+    }
+  }
 
   closeAccordion(event: any, id: number) {
     // const eltRef = event.target.closest('ion-accordion');
@@ -115,9 +130,9 @@ export class DevoirPage implements OnInit {
 
   @Output() passNotification = new EventEmitter();
 
-  runParentFunction() {
-    this.passNotification.emit();
-    console.log("child component");
-    console.log(this.passNotification);
-  }
+  // runParentFunction() {
+  //   this.passNotification.emit();
+  //   console.log("child component");
+  //   console.log(this.passNotification);
+  // }
 }

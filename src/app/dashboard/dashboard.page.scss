@@ -449,9 +449,13 @@ ion-title.title-style {
         font-size: 10px;
         line-height: 14px;
         height: 19px;
-        margin-left: 7px;
         border-radius: 50px;
         padding: 0 10px;
+        @media (max-width: 300px) {
+          & {
+            padding: 0;
+          }
+        }
         text-wrap: nowrap;
 
         &.group {

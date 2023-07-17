@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AnimationController, ToastController } from '@ionic/angular';
+import { AnimationController, ModalController, ModalOptions, ToastController } from '@ionic/angular';
 import { Subject } from 'rxjs';
+import { PdfPage } from 'src/app/pdf/pdf.page';
+// import { PdfPage } from 'src/app/pdf/pdf.page';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,8 @@ export class NotificationService {
   notification$ = this.notificationSubject.asObservable()
   constructor(
     private animationCtrl: AnimationController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private modalCtrl: ModalController
 
   ) {
   }
@@ -62,5 +65,21 @@ export class NotificationService {
     });
 
     await toast.present();
+  }
+
+  async openIFrame(url: string, fileName : string) {
+    // const modalOpt : ModalOptions = 
+    const modal = await this.modalCtrl.create({
+      component: PdfPage,
+      componentProps: {
+        link: url,
+        name: fileName
+      },
+      mode: "ios",
+      initialBreakpoint: 1,
+      breakpoints: [0, 0.75, 1],
+      animated: true
+    })
+    modal.present()
   }
 }

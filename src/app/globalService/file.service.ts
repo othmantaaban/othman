@@ -14,6 +14,7 @@ export class FileService {
   // private apiUrl = "https://boti.education/p/demo/botiapi/"
 
   private apiUrl
+  schoolName = 'othman'
   constructor(
     private apiservice: ApiService,
     private http: HttpClient,
@@ -22,44 +23,44 @@ export class FileService {
       this.apiUrl = apiservice.apiUrl
   }
 
-  // async downloadImage(path: string, name: any): Promise<void> {
+  async downloadImage(path: string, name: any): Promise<void> {
 
-  //   let permission = await Filesystem.checkPermissions();
+    let permission = await Filesystem.checkPermissions();
 
-  //   if(permission.publicStorage !== 'granted')
-  //   permission = await Filesystem.requestPermissions();
+    if(permission.publicStorage !== 'granted')
+    permission = await Filesystem.requestPermissions();
 
 
-  //   if(permission.publicStorage == 'granted'){
-  //     if (!name) {
-  //       name = path.split('/').pop();
-  //     }
+    if(permission.publicStorage == 'granted'){
+      if (!name) {
+        name = path.split('/').pop();
+      }
 
-  //     let data = await this.base64FromPath(path);
-  //     let params: WriteFileOptions = {
-  //       path: name,
-  //       data: data,
-  //       directory: Directory.Cache,
-  //     };
-  //     let file = await Filesystem.writeFile(params);
+      let data = await this.base64FromPath(path);
+      let params: WriteFileOptions = {
+        path: name,
+        data: data,
+        directory: Directory.Cache,
+      };
+      let file = await Filesystem.writeFile(params);
 
-  //     await Media.savePhoto({ path: file.uri, album: schoolName })
+      await Media.savePhoto({ path: file.uri, albumIdentifier: this.schoolName })
 
-  //     let alert = await this.alertCtrl.create({
-  //       cssClass: "success_alert_boti",
-  //       header: 'Fichier telechargé',
-  //       message: "",
-  //       buttons: [
-  //         {
-  //           text: 'OK',
-  //           role: "cancel",
-  //           handler: () => {},
-  //         },
-  //       ],
-  //     });
-  //     alert.present();
-  //   }
-  // };
+      let alert = await this.alertCtrl.create({
+        cssClass: "success_alert_boti",
+        header: 'Fichier telechargé',
+        message: "",
+        buttons: [
+          {
+            text: 'OK',
+            role: "cancel",
+            handler: () => {},
+          },
+        ],
+      });
+      alert.present();
+    }
+  };
 
   async downloadFile(path: string, name: any) {
 

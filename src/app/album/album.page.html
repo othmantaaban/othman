@@ -26,12 +26,12 @@
           >
             <div class="image">
               <ion-img
-                src="assets/album/pic3.png"
+                [src]="album.mainImage"
                 class="albuToValide"
                 alt=""
               ></ion-img>
               <ion-img
-                src="assets/album/pic2.png"
+                [src]="album.mainImage"
                 class="albuToValide"
                 alt=""
               ></ion-img>
@@ -70,16 +70,27 @@
               <div class="main" *ngIf="albumContent !== {}">
                 <ion-button
                   class="navigation nextEl"
-                  (click)="goToNext('swiper' + i)"
+                  (click)="goToNext('swiper' + album.Id)"
                 >
                   <ion-icon name="chevron-forward-outline"></ion-icon>
                 </ion-button>
                 <ion-button
                   class="navigation prevEl"
-                  (click)="goToPrev('swiper' + i)"
+                  (click)="goToPrev('swiper' + album.Id)"
                 >
                   <ion-icon name="chevron-back-outline"></ion-icon>
                 </ion-button>
+                <div class="eleveTag" *ngIf="albumContent['eleveTag']">
+                  <ng-container *ngFor="let tag of albumContent['eleveTag']; let i = index">
+                    <ion-img class="img" *ngIf="i < 4" [src]="tag"></ion-img>
+                  </ng-container>
+                  <div class="count-tag img" *ngIf="albumContent['eleveTag'].length - 4 > 0">
+                      + {{ albumContent['eleveTag'].length - 4 }}
+                  </div>
+
+                </div>
+                <!-- <div>{{albumContent['images']}}</div> -->
+
                 <ion-badge mode="ios" class="side-fractions">
                   <ion-img src="assets/imageIcon.svg"></ion-img>
                   <span>
@@ -89,27 +100,29 @@
                 </ion-badge>
                 <swiper-container
                   [loop]="true"
-                  [id]="'swiper' + i"
+                  class="albumSwiperContainer"
+                  [id]="'swiper' + album.Id"
+                  [pagination]="PaginationConfig"
+                  [slidesPerView]="1"
                 >
-                  <swiper-slide *ngFor="let pic of albumContent['images']">
-                    <ion-img src="{{ pic }}" alt=""></ion-img>
-                    <ion-button class="remove" shape="round">
-                      <ion-icon name="trash-outline"></ion-icon>
-                    </ion-button>
-                  </swiper-slide>
-                  <!-- <swiper-slide>
-                    <ion-img src="assets/album/pic2.png" alt=""></ion-img>
-                    <ion-button class="remove" shape="round">
-                      <ion-icon name="trash-outline"></ion-icon>
-                    </ion-button>
-                  </swiper-slide>
                   <swiper-slide>
-                    <ion-img src="assets/album/pic1.png" alt=""></ion-img>
-                    <ion-button class="remove" shape="round">
-                      <ion-icon name="trash-outline"></ion-icon>
-                    </ion-button>
-                  </swiper-slide> -->
+                  </swiper-slide> 
                 </swiper-container>
+                 <!-- <swiper-container
+                  [loop]="true"
+                  class="albumSwiperContainer"
+                  [id]="'swiper' + album.Id"
+                  [pagination]="PaginationConfig"
+                  [slidesPerView]="1"
+                >
+        
+                    <swiper-slide class='album' *ngFor="let item of [1,2,3,4]; let i = index;  " >
+                      <ion-img class='slidePicTest' [src]="albumContent['images'][i]" alt="" loading="lazy"></ion-img>
+                      <ion-button class="remove" shape="round" (click)='removePic()'>
+                      </ion-button>
+                  </swiper-slide>  
+                  <swiper-slide></swiper-slide>
+                </swiper-container>  -->
               </div>
             </div>
 

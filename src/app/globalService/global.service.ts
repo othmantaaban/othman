@@ -5,8 +5,8 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class GlobalService {
-  private url = "https://boti.education/p/demo/botiapi/admin_"
-  // private url = 'http://localhost/school_23/botiapi/';
+  // private url = "https://boti.education/p/demo/botiapi/admin_"
+  private url = 'http://localhost/school_23/botiapi/';
 
   constructor(private _http: HttpClient) {}
 

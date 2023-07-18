@@ -29,8 +29,6 @@ ion-accordion-group {
             transition: 300ms cubic-bezier(0.25, 0.8, 0.5, 1);
             box-shadow: 0px 6px 16px #d6d6e4;
             border-radius: 10px;
-            // width: 100%;
-            // overflow-x: auto;
             padding: 10px;
 
             .accordion-header {
@@ -153,7 +151,6 @@ ion-accordion-group {
 
               .devoirs {
                 padding: 0 20px 20px;
-                min-height: 200px;
 
                 .text-content {
                   font-weight: 500;

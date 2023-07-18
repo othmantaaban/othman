@@ -14,16 +14,18 @@ export class AlbumService {
     return this.global.getHttpClient(this.endPoint);
   }
 
-  setAlbumValid(albumId: number, action: string = null) {
+  setAlbumValid(albumId: number, action: string, value : any = null) {
     let request : Object = {};
-    if(action === null) {
+    if(value === null) {
       request = {
-        devoirId: albumId,
+        id: albumId,
+        action: action
       }
     } else {
       request = {
-        devoirId: albumId,
-        action: action
+        id: albumId,
+        action: action,
+        value: value
       }
     }
     return this.global.postHttpClient(this.endPoint, request);

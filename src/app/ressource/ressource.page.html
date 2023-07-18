@@ -67,9 +67,9 @@
               <div class="date">Le {{ ressourceContent['date'] }}</div>
               <div
                 class="text-content"
-                [innerHTML]="ressourceContent['content']"
               >
-                <!-- <span class="description" *ngIf="true">Description : </span> -->
+                <span class='description'>Description : </span>
+                <span [innerHTML]="ressourceContent['content']"></span>
               </div>
               <span class="download" *ngIf="ressourceContent['file']">
                 <ion-img

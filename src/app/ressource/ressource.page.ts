@@ -56,13 +56,10 @@ export class RessourcePage implements OnInit {
       this.group.value = undefined
       this.cdr.detectChanges();
       this.sendNotification(res.non_validated_ressources.length)
-
+      this.dataIsLoad = false
     });
 
 
-  }
-  ionViewDidEnter() {
-    this.dataIsLoad = false;
   }
   getRessourceContent() {
     const ressourceId = this.group.value;

@@ -66,8 +66,9 @@
             </div>
           </div>
           <div slot="content" class="accordion-content">
-            <div class="album">
-              <div class="main" *ngIf="albumContent !== {}">
+            <div class="album" *ngIf="albumContent !== {}">
+              <div class="content" [innerHTML]="albumContent['content']"></div>
+              <div class="main" *ngIf="albumContent['images'] && albumContent['images'].length !== 0">
                 <ion-button
                   class="navigation nextEl"
                   (click)="goToNext('swiper' + album.Id)"
@@ -106,7 +107,7 @@
                   [slidesPerView]="1"
                 >
                   <swiper-slide>
-                  </swiper-slide> 
+                  </swiper-slide>
                 </swiper-container>
                  <!-- <swiper-container
                   [loop]="true"
@@ -115,17 +116,17 @@
                   [pagination]="PaginationConfig"
                   [slidesPerView]="1"
                 >
-        
+
                     <swiper-slide class='album' *ngFor="let item of [1,2,3,4]; let i = index;  " >
                       <ion-img class='slidePicTest' [src]="albumContent['images'][i]" alt="" loading="lazy"></ion-img>
                       <ion-button class="remove" shape="round" (click)='removePic()'>
                       </ion-button>
-                  </swiper-slide>  
+                  </swiper-slide>
                   <swiper-slide></swiper-slide>
                 </swiper-container>  -->
               </div>
             </div>
-
+            <div class="line"></div>
             <ion-footer mode="md">
               <ion-button
                 shape="round"

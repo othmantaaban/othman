@@ -75,7 +75,7 @@ export class AlbumPage implements OnInit {
 
   valideAlbum($event, devoirId: number, action: string = null) {
     // $event.stopPropagation();
-    const data = this.albumService.setAlbumValid(devoirId, action, "validation");
+    const data = this.albumService.setAlbumValid(devoirId, "validation", action);
     data.subscribe((res: any) => {
       const eltRef = $event.target.closest('ion-col');
       this.notificationService.validateAnimation(eltRef, () => {
@@ -88,39 +88,43 @@ export class AlbumPage implements OnInit {
 
   getAlbumContent() {
     const albumId = this.group.value
-    const swiperElt =  document.querySelector(`#swiper${albumId}`) as any;
 
-    
-    
+
+
     if(albumId !== undefined) {
+      const swiperElt =  document.querySelector(`#swiper${albumId}`) as any;
       const data =this.albumService.getAlbumContent(+albumId)
-      
+
       data.subscribe(elt=> {
-        const swiper = swiperElt.swiper as Swiper
-        const swperSlideElt = (pic) => {
-          const swiperSlide = document.createElement("swiper-slide") as SwiperSlide
-          swiperSlide.className = "album"
-          const IonBtn = document.createElement("ion-button") as HTMLIonButtonElement;
-          IonBtn.addEventListener("click", () => this.removePic(albumId));
-          IonBtn.className = "remove"
-          IonBtn.shape = "round"
-          const IonIcon = document.createElement("ion-icon") as HTMLIonIconElement
-          IonIcon.name = "trash-outline"
-          // "<ion-icon name='trash-outline'></ion-icon>"
-          IonBtn.appendChild(IonIcon)
-          const ionImg = document.createElement("ion-img") as HTMLIonImgElement
-          ionImg.src = pic
-          swiperSlide.appendChild(ionImg)
-          swiperSlide.appendChild(IonBtn)
-    
-          return swiperSlide
-        }
-        swiper.removeAllSlides()
-        if(elt.images) {
-          elt.images.map((pic, i) => {
-            swiper.addSlide(i + 1, swperSlideElt(pic))
-          })
-          
+        if(swiperElt) {
+          const swiper = swiperElt.swiper as Swiper
+          const swperSlideElt = (pic) => {
+            const swiperSlide = document.createElement("swiper-slide") as SwiperSlide
+            swiperSlide.className = "album"
+            const IonBtn = document.createElement("ion-button") as HTMLIonButtonElement;
+            console.log(pic);
+
+            IonBtn.addEventListener("click", () => this.removePic(pic.id));
+            IonBtn.className = "remove"
+            IonBtn.shape = "round"
+            const IonIcon = document.createElement("ion-icon") as HTMLIonIconElement
+            IonIcon.name = "trash-outline"
+            // "<ion-icon name='trash-outline'></ion-icon>"
+            IonBtn.appendChild(IonIcon)
+            const ionImg = document.createElement("ion-img") as HTMLIonImgElement
+            ionImg.src = pic.file
+            swiperSlide.appendChild(ionImg)
+            swiperSlide.appendChild(IonBtn)
+
+            return swiperSlide
+          }
+          swiper.removeAllSlides()
+          if(elt.images) {
+            elt.images.map((pic, i) => {
+              swiper.addSlide(i + 1, swperSlideElt(pic))
+            })
+
+          }
         }
         this.albumContent = elt
        })
@@ -130,8 +134,13 @@ export class AlbumPage implements OnInit {
   removePic(devoirId) {
     const data = this.albumService.setAlbumValid(devoirId, "deletePic");
     data.subscribe(res => {
-      // this.notificationService.validateAnimation(eltRef, () => {
+        const swiperElt =  document.querySelector(`#swiper${this.group.value}`) as any;
+        const swiper =  swiperElt.swiper as Swiper
+        swiper.removeSlide(swiper.activeIndex);
         // this.initialize()
+
+        const Index =  this.albums.findIndex(elt => elt.Id == this.group.value)
+        this.albums[Index].imageCount = res.countPic
         this.notificationService.presentToast(res.msg, res.valide)
       // })
     })

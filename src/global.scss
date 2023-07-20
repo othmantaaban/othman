@@ -136,3 +136,50 @@ ion-alert.demandAlerts {
     }
   }
 }
+
+
+.demande-collab {
+  .modal-header-collab {
+
+  }
+  .modal-content-collab {
+    // --ion-background-color: red;
+    ion-radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      // overflow: visible;
+      ion-radio {
+        flex: 1;
+        padding: 10px;
+        box-shadow: 0px -1px 20px 0px rgba(214, 214, 228, 0.41);
+        border-radius: 10px;
+        .collab-infos {
+          display: flex;
+          gap: 10px;
+          align-items: center;
+          ion-img {
+            width: 35.4px;
+            height: 35.4px;
+            min-width: 35.4px;
+            min-height: 35.4px;
+            object-fit: fill;
+            &::part(image) {
+              border-radius: 50%;
+            }
+          }
+        }
+
+        &.radio-checked {
+          background-color: #515ED4;
+          color: white;
+          box-shadow: 0px 0px 25px #D2D5FF;
+        }
+
+        &::part(container){
+          display: none;
+        }
+      }
+    }
+  }
+}

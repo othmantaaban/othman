@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChild } from '@angular/core';
-import { ActionSheetController, AlertController, Animation, AnimationController, IonAccordionGroup, IonAlert, IonSelect } from '@ionic/angular';
+import { AlertController, IonAccordionGroup, IonAlert, IonModal, } from '@ionic/angular';
 import { DemandeService } from './services/demande.service';
 // import { HTMLIonAlertElement } from ''
 @Component({
@@ -11,18 +11,22 @@ export class DemandePage implements OnInit {
   @ViewChild(IonAlert) alert: QueryList<IonAlert>;
   @ViewChild('myAlert') myAlert: ElementRef;
   @ViewChild('demandAccordion') group : IonAccordionGroup;
+  @ViewChild(IonModal) modal : IonModal;
   radioValue = null
-
+  collabRadioValue = null
+  isModalOpen : boolean = false;
+  collab : Object = null
 
   public demandesList : Array<any>= [];
   public demandeContent : Object = {};
-  public responsable : Object = {};
+  public responsable : Array<any> = [];
 
 
   constructor(
     private alertController: AlertController,
     private demandeService : DemandeService,
-    private cdr : ChangeDetectorRef
+    private cdr : ChangeDetectorRef,
+
   ) {}
 
   ngOnInit() {
@@ -51,10 +55,10 @@ export class DemandePage implements OnInit {
       const data = this.demandeService.getDemandeContent(+demandeId);
       data.subscribe((elt) => {
         this.demandeContent = elt;
-        console.log(elt);
-
-        // this.contentIsLoad = false;
-        this.cdr.detectChanges();
+        this.collabRadioValue = elt.responsable ? elt.responsable.id : null
+        this.radioValue = elt.responsable ? 'add_collab' : null
+        this.collab = elt.responsable ? elt.responsable : this.responsable[0]
+        // this.cdr.detectChanges();
       })
     }
 
@@ -79,16 +83,30 @@ export class DemandePage implements OnInit {
       await top.dismiss()
     }
   }
-
-
-
-
-
   checkboxChanged(event: any) {
     // Keep the action sheet open when checkboxes are clicked
     event.stopPropagation();
   }
 
+  async setModalOpen() {
+    // this.isModalOpen = true
+    await this.modal.present();
+  }
+
+  confirm() {
+    this.modal.dismiss(this.collabRadioValue, 'confirm')
+  }
+
+  collabWillDissmiss($event : Event) {
+    const ev = $event as CustomEvent;
+    if (ev.detail.role === 'confirm') {
+      console.log(ev.detail);
+    } else {
+      console.log("dissmiss");
+
+    }
+
+  }
 
 
 

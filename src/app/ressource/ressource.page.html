@@ -4,276 +4,360 @@
   (ionChange)="getRessourceContent()"
 >
   <ion-grid class="dash-grid">
-    <ion-row class="header-title">
-      <ion-col size="12">
-        <ion-title mode="md" class="title-style">
-          Ressources à valider
-        </ion-title>
-      </ion-col>
-    </ion-row>
-    <ion-row class="ressource">
-      <ion-col
-        class="ressource-col-parent"
-        size-sm="12"
-        size-lg="6"
-        *ngFor="let nValidateR of non_validated_ressources"
-      >
-        <ion-accordion [value]="nValidateR.Id">
-          <div
-            class="accordion-header"
-            (mousedown)="$event.preventDefault()"
-            slot="header"
-          >
+    <ng-container *ngIf="!dataIsLoad">
+      <ion-row class="header-title">
+        <ion-col size="12">
+          <ion-title mode="md" class="title-style">
+            Ressources à valider
+          </ion-title>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ressource">
+        <ion-col
+          class="ressource-col-parent"
+          size-sm="12"
+          size-lg="6"
+          *ngFor="let nValidateR of non_validated_ressources"
+        >
+          <ion-accordion [value]="nValidateR.Id">
             <div
-              class="image"
-              [class]="nValidateR.typeFile === 'pdf' ? 'pdf' : nValidateR.typeFile === 'docx' ? 'word' : 'other'"
+              class="accordion-header"
+              (mousedown)="$event.preventDefault()"
+              slot="header"
             >
-              <ion-img
-                [src]="nValidateR.typeFile === 'pdf' ? 'assets/documents/pdf.png' : nValidateR.typeFile === 'docx' ? 'assets/documents/word.png' : 'assets/documents/other.png'"
-              >
-              </ion-img>
-            </div>
-            <div class="info">
-              <p class="ressource-name">
-                {{ nValidateR.label | slice:0:50 }}<span
-                  *ngIf="nValidateR.label.length > 50"
-                  >...</span
-                >
-              </p>
-              <div class="mini-content">
-                <span class="par">
-                  Par <span class="name"> {{ nValidateR.userName }} </span>
-                </span>
-                <span class="subject"> {{ nValidateR.Matiere }} </span>
-                  <span
-                    class="group-style group"
-                    *ngFor="let classe of nValidateR.classes"
-                  >
-                    {{ classe }}
-                  </span>
-              </div>
-            </div>
-            <div class="time-icon">
-              <div class="icon">
-                <ion-icon
-                  name="chevron-down-outline"
-                  class="ion-accordion-toggle-icon arrow"
-                ></ion-icon>
-              </div>
-            </div>
-          </div>
-          <div slot="content" class="accordion-content">
-            <div class="ressources">
-              <div class="date">Le {{ ressourceContent['date'] }}</div>
               <div
-                class="text-content"
+                class="image"
+                [class]="nValidateR.typeFile === 'pdf' ? 'pdf' : nValidateR.typeFile === 'docx' ? 'word' : 'other'"
               >
-                <span class='description'>Description : </span>
-                <span [innerHTML]="ressourceContent['content']"></span>
-              </div>
-              <span class="download" *ngIf="ressourceContent['file']">
                 <ion-img
-                  [src]="nValidateR.typeFile === 'pdf' ? 'assets/documents/insideDownload/pdf.png' : nValidateR.typeFile === 'docx' ? 'assets/documents/word.png' : 'assets/documents/other.png'"
-                  class="fileType"
-                  [class]="nValidateR.typeFile === 'pdf' ? 'pdf' : nValidateR.typeFile === 'docx' ? 'word' : 'other'"
+                  [src]="nValidateR.typeFile === 'pdf' ? 'assets/documents/pdf.png' : nValidateR.typeFile === 'docx' ? 'assets/documents/word.png' : 'assets/documents/other.png'"
                 >
                 </ion-img>
-                <div class="fileName">
-                  {{ splitFileNameToArray(ressourceContent['file'].fileName)[0]
-                  | slice:0:21 }}
-                  <span
-                    *ngIf="splitFileNameToArray(ressourceContent['file'].fileName)[0].length > 21"
+              </div>
+              <div class="info">
+                <p class="ressource-name">
+                  {{ nValidateR.label | slice:0:50 }}<span
+                    *ngIf="nValidateR.label.length > 50"
                     >...</span
                   >
-                  . {{
-                  splitFileNameToArray(ressourceContent['file'].fileName)[1] }}
-                </div>
-                <ion-icon name="eye-outline" class="fileBtn"></ion-icon>
-                <ion-img src="assets/downloads.svg" class="fileBtn" (click)="downloadFile(ressourceContent['file'].fileLink ,ressourceContent['file'].fileName)"></ion-img>
-              </span>
-            </div>
-            <ion-footer mode="md">
-              <!-- <ion-button shape="round" fill="clear">Rejeter</ion-button>
-              <ion-button shape="round" fill="clear">valider</ion-button> -->
-              <ion-button
-                shape="round"
-                fill="clear"
-                (click)="valideRessource($event, nValidateR.Id, 'rejeter')"
-                >Rejeter</ion-button
-              >
-              <ion-button
-                shape="round"
-                fill="clear"
-                (click)="valideRessource($event, nValidateR.Id, 'validate')"
-                >valider</ion-button
-              >
-            </ion-footer>
-          </div>
-        </ion-accordion>
-      </ion-col>
-    </ion-row>
-    <ion-row class="header-title">
-      <ion-col size="12">
-        <ion-title mode="md" class="title-style">
-          Ressources validées
-        </ion-title>
-      </ion-col>
-    </ion-row>
-    <ion-row class="ressource">
-      <ion-col
-        class="ressource-col-parent"
-        size-sm="12"
-        size-lg="6"
-        *ngFor="let validated of validated_ressources"
-      >
-        <ion-accordion>
-          <div
-            class="accordion-header"
-            (mousedown)="$event.preventDefault()"
-            slot="header"
-          >
-            <div
-              class="image"
-              [class]="validated.typeFile === 'pdf' ? 'pdf' : validated.typeFile === 'docx' ? 'word' : 'other'"
-            >
-              <ion-img
-                [src]="validated.typeFile === 'pdf' ? 'assets/documents/pdf.png' : validated.typeFile === 'docx' ? 'assets/documents/word.png' : 'assets/documents/other.png'"
-              >
-              </ion-img>
-            </div>
-            <div class="info">
-              <p class="ressource-name">
-                {{ validated.label | slice:0:50 }}<span
-                  *ngIf="validated.label.length > 50"
-                  >...</span
-                >
-              </p>
-              <div class="mini-content">
-                <span class="par">
-                  Par <span class="name"> {{ validated.userName }} </span>
-                </span>
-                <span class="subject"> {{ validated.Matiere }} </span>
-                <span class="group-parent">
-                  <span
-                    class="group-style group"
-                    *ngFor="let classe of validated.classes"
-                  >
-                    {{ classe }}
+                </p>
+                <div class="mini-content">
+                  <span class="par">
+                    Par <span class="name"> {{ nValidateR.userName }} </span>
                   </span>
+                  <span class="subject"> {{ nValidateR.Matiere }} </span>
+                    <span
+                      class="group-style group"
+                      *ngFor="let classe of nValidateR.classes"
+                    >
+                      {{ classe }}
+                    </span>
+                </div>
+              </div>
+              <div class="time-icon">
+                <div class="icon">
+                  <ion-icon
+                    name="chevron-down-outline"
+                    class="ion-accordion-toggle-icon arrow"
+                  ></ion-icon>
+                </div>
+              </div>
+            </div>
+            <div slot="content" class="accordion-content">
+              <div class="ressources">
+                <div class="date">Le {{ ressourceContent['date'] }}</div>
+                <div
+                  class="text-content"
+                >
+                  <span class='description'>Description : </span>
+                  <span [innerHTML]="ressourceContent['content']"></span>
+                </div>
+                <span class="download" *ngIf="ressourceContent['file']">
+                  <ion-img
+                    [src]="nValidateR.typeFile === 'pdf' ? 'assets/documents/insideDownload/pdf.png' : nValidateR.typeFile === 'docx' ? 'assets/documents/word.png' : 'assets/documents/other.png'"
+                    class="fileType"
+                    [class]="nValidateR.typeFile === 'pdf' ? 'pdf' : nValidateR.typeFile === 'docx' ? 'word' : 'other'"
+                  >
+                  </ion-img>
+                  <div class="fileName">
+                    {{ splitFileNameToArray(ressourceContent['file'].fileName)[0]
+                    | slice:0:21 }}
+                    <span
+                      *ngIf="splitFileNameToArray(ressourceContent['file'].fileName)[0].length > 21"
+                      >...</span
+                    >
+                    . {{
+                    splitFileNameToArray(ressourceContent['file'].fileName)[1] }}
+                  </div>
+                  <ion-icon name="eye-outline" class="fileBtn"></ion-icon>
+                  <ion-img src="assets/downloads.svg" class="fileBtn" (click)="downloadFile(ressourceContent['file'].fileLink ,ressourceContent['file'].fileName)"></ion-img>
                 </span>
               </div>
-            </div>
-            <div class="time-icon">
-              <div class="icon">
-                <ion-icon
-                  name="chevron-down-outline"
-                  class="ion-accordion-toggle-icon arrow"
-                ></ion-icon>
+              <div class="line">
               </div>
+              <ion-footer mode="md">
+                <ion-button
+                  shape="round"
+                  fill="clear"
+                  (click)="valideRessource($event, nValidateR.Id, 'rejeter')"
+                  >Rejeter</ion-button
+                >
+                <ion-button
+                  shape="round"
+                  fill="clear"
+                  (click)="valideRessource($event, nValidateR.Id, 'validate')"
+                  >valider</ion-button
+                >
+              </ion-footer>
             </div>
-          </div>
-          <div slot="content" class="accordion-content">
+          </ion-accordion>
+        </ion-col>
+      </ion-row>
+      <ion-row class="header-title">
+        <ion-col size="12">
+          <ion-title mode="md" class="title-style">
+            Ressources validées
+          </ion-title>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ressource">
+        <ion-col
+          class="ressource-col-parent"
+          size-sm="12"
+          size-lg="6"
+          *ngFor="let validated of validated_ressources"
+        >
+          <ion-accordion [value]="validated.Id">
             <div
-              class="devoirvalidation"
-              [class.valide]="validated.visible"
-              [class.nvalide]="!validated.visible"
-              (click)="closeAccordion($event, validated.Id)"
+              class="accordion-header"
+              (mousedown)="$event.preventDefault()"
+              slot="header"
             >
-              <ion-icon [name]="validated.visible ?'checkmark-outline' : 'close-outline'" class="icon"></ion-icon>
-              <span>Ressource <span *ngIf="validated.visible">validée</span> <span *ngIf="validated.visible">rejetée</span></span>
-              <ion-button class="absolute" fill="outline" shape="round" (click)="valideRessource($event, validated.Id)">
-                <ion-icon name="reload-outline" slot="start"></ion-icon>
-                Revoire
-              </ion-button>
-            </div>
-            <div class="ressources">
-              <div class="date">Le {{ ressourceContent['date'] }}</div>
               <div
-                class="text-content"
-                [innerHTML]="ressourceContent['content']"
+                class="image"
+                [class]="validated.typeFile === 'pdf' ? 'pdf' : validated.typeFile === 'docx' ? 'word' : 'other'"
               >
-                <!-- <span class="description" *ngIf="true">Description : </span> -->
-              </div>
-              <span class="download" *ngIf="ressourceContent['file']">
                 <ion-img
-                  [src]="validated.typeFile === 'pdf' ? 'assets/documents/insideDownload/pdf.png' : validated.typeFile === 'docx' ? 'assets/documents/word.png' : 'assets/documents/other.png'"
-                  class="fileType"
-                  [class]="validated.typeFile === 'pdf' ? 'pdf' : validated.typeFile === 'docx' ? 'word' : 'other'"
+                  [src]="validated.typeFile === 'pdf' ? 'assets/documents/pdf.png' : validated.typeFile === 'docx' ? 'assets/documents/word.png' : 'assets/documents/other.png'"
                 >
                 </ion-img>
-                <div class="fileName">
-                  {{ splitFileNameToArray(ressourceContent['file'].fileName)[0]
-                  | slice:0:21 }}
-                  <span
-                    *ngIf="splitFileNameToArray(ressourceContent['file'].fileName)[0].length > 21"
+              </div>
+              <div class="info">
+                <p class="ressource-name">
+                  {{ validated.label | slice:0:50 }}<span
+                    *ngIf="validated.label.length > 50"
                     >...</span
                   >
-                  . {{
-                  splitFileNameToArray(ressourceContent['file'].fileName)[1] }}
+                </p>
+                <div class="mini-content">
+                  <span class="par">
+                    Par <span class="name"> {{ validated.userName }} </span>
+                  </span>
+                  <span class="subject"> {{ validated.Matiere }} </span>
+                  <span class="group-parent">
+                    <span
+                      class="group-style group"
+                      *ngFor="let classe of validated.classes"
+                    >
+                      {{ classe }}
+                    </span>
+                  </span>
                 </div>
-                <ion-icon name="eye-outline" class="fileBtn"></ion-icon>
-                <ion-img src="assets/downloads.svg" class="fileBtn" (click)="downloadFile(ressourceContent['file'].fileLink ,ressourceContent['file'].fileName)"></ion-img>
-              </span>
+              </div>
+              <div class="time-icon">
+                <div class="icon">
+                  <ion-icon
+                    name="chevron-down-outline"
+                    class="ion-accordion-toggle-icon arrow"
+                  ></ion-icon>
+                </div>
+              </div>
             </div>
-          </div>
-        </ion-accordion>
-      </ion-col>
-      <!-- <ion-col class="ressource-col-parent" size-sm="12" size-lg="6">
-        <ion-accordion>
-          <div class="accordion-header" slot="header">
-            <div class="image">
-              <ion-img src="assets/pdf.png"></ion-img>
-            </div>
-            <div class="info">
-              <p class="ressource-name">
-                Les 4 histoires de base aux apprentissages ...
-              </p>
-              <div class="mini-content">
-                <span class="par">
-                  Par <span class="name">BECHIRE HADIM</span>
+            <div slot="content" class="accordion-content">
+              <div
+                class="devoirvalidation"
+                [class.valide]="validated.visible"
+                [class.nvalide]="!validated.visible"
+                (click)="closeAccordion($event, validated.Id)"
+              >
+                <ion-icon [name]="validated.visible ?'checkmark-outline' : 'close-outline'" class="icon"></ion-icon>
+                <span>Ressource <span *ngIf="validated.visible">validée</span> <span *ngIf="validated.visible">rejetée</span></span>
+                <ion-button class="absolute" fill="outline" shape="round" (click)="valideRessource($event, validated.Id)">
+                  <ion-icon name="reload-outline" slot="start"></ion-icon>
+                  Revoire
+                </ion-button>
+              </div>
+              <div class="ressources">
+                <div class="date">Le {{ ressourceContent['date'] }}</div>
+                <div
+                  class="text-content"
+                  [innerHTML]="ressourceContent['content']"
+                >
+                  <!-- <span class="description" *ngIf="true">Description : </span> -->
+                </div>
+                <span class="download" *ngIf="ressourceContent['file']">
+                  <ion-img
+                    [src]="validated.typeFile === 'pdf' ? 'assets/documents/insideDownload/pdf.png' : validated.typeFile === 'docx' ? 'assets/documents/word.png' : 'assets/documents/other.png'"
+                    class="fileType"
+                    [class]="validated.typeFile === 'pdf' ? 'pdf' : validated.typeFile === 'docx' ? 'word' : 'other'"
+                  >
+                  </ion-img>
+                  <div class="fileName">
+                    {{ splitFileNameToArray(ressourceContent['file'].fileName)[0]
+                    | slice:0:21 }}
+                    <span
+                      *ngIf="splitFileNameToArray(ressourceContent['file'].fileName)[0].length > 21"
+                      >...</span
+                    >
+                    . {{
+                    splitFileNameToArray(ressourceContent['file'].fileName)[1] }}
+                  </div>
+                  <ion-icon name="eye-outline" class="fileBtn"></ion-icon>
+                  <ion-img src="assets/downloads.svg" class="fileBtn" (click)="downloadFile(ressourceContent['file'].fileLink ,ressourceContent['file'].fileName)"></ion-img>
                 </span>
-                <span class="subject">Arabe</span>
-                <span class="group-style group">GS G1</span>
               </div>
             </div>
-            <div class="time-icon">
-              <div class="icon">
-                <ion-icon name="chevron-down-outline" class="ion-accordion-toggle-icon arrow"></ion-icon>
+          </ion-accordion>
+        </ion-col>
+        <!-- <ion-col class="ressource-col-parent" size-sm="12" size-lg="6">
+          <ion-accordion>
+            <div class="accordion-header" slot="header">
+              <div class="image">
+                <ion-img src="assets/pdf.png"></ion-img>
               </div>
-            </div>
-          </div>
-          <div slot="content" class="accordion-content">
-            <div
-              class="devoirvalidation nvalide"
-            >
-              <ion-icon name="close-outline" class="icon"></ion-icon>
-              <span>Ressource rejetée</span>
-              <ion-button class="absolute" fill="outline" shape="round">
-                <ion-icon name="reload-outline" slot="start"></ion-icon>
-                Revoire
-              </ion-button>
-            </div>
-            <div class="ressources">
-              <div class="date">
-                Le 11/11/2021  19:15
-              </div>
-              <div class="text-content">
-                <span class="description">Description : </span>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              </div>
-              <span class="download">
-                <ion-img src="assets/pdf.png" class="fileType"></ion-img>
-                <div class="fileName">
-                  document-Admin...pdf
+              <div class="info">
+                <p class="ressource-name">
+                  Les 4 histoires de base aux apprentissages ...
+                </p>
+                <div class="mini-content">
+                  <span class="par">
+                    Par <span class="name">BECHIRE HADIM</span>
+                  </span>
+                  <span class="subject">Arabe</span>
+                  <span class="group-style group">GS G1</span>
                 </div>
-                <ion-icon name="eye-outline" class="fileBtn"></ion-icon>
-                <ion-img src="assets/downloads.svg" class="fileBtn"></ion-img>
-              </span>
+              </div>
+              <div class="time-icon">
+                <div class="icon">
+                  <ion-icon name="chevron-down-outline" class="ion-accordion-toggle-icon arrow"></ion-icon>
+                </div>
+              </div>
             </div>
+            <div slot="content" class="accordion-content">
+              <div
+                class="devoirvalidation nvalide"
+              >
+                <ion-icon name="close-outline" class="icon"></ion-icon>
+                <span>Ressource rejetée</span>
+                <ion-button class="absolute" fill="outline" shape="round">
+                  <ion-icon name="reload-outline" slot="start"></ion-icon>
+                  Revoire
+                </ion-button>
+              </div>
+              <div class="ressources">
+                <div class="date">
+                  Le 11/11/2021  19:15
+                </div>
+                <div class="text-content">
+                  <span class="description">Description : </span>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+                </div>
+                <span class="download">
+                  <ion-img src="assets/pdf.png" class="fileType"></ion-img>
+                  <div class="fileName">
+                    document-Admin...pdf
+                  </div>
+                  <ion-icon name="eye-outline" class="fileBtn"></ion-icon>
+                  <ion-img src="assets/downloads.svg" class="fileBtn"></ion-img>
+                </span>
+              </div>
 
-          </div>
-        </ion-accordion>
-      </ion-col> -->
-    </ion-row>
+            </div>
+          </ion-accordion>
+        </ion-col> -->
+      </ion-row>
+    </ng-container>
+    <ion-list *ngIf="dataIsLoad">
+      <ion-list-header>
+        <ion-skeleton-text
+          [animated]="true"
+          style="width: 80px"
+        ></ion-skeleton-text>
+      </ion-list-header>
+      <ion-item *ngFor="let i of [0, 1, 2, 3]" style="height: 90px; --inner-padding-end: 0; display: flex;">
+        <ion-thumbnail
+          slot="start"
+          style="border-radius: 7px; overflow: hidden; height: 51px; width: 51px;"
+        >
+          <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+        </ion-thumbnail>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text
+              [animated]="true"
+              style="width: 80%"
+            ></ion-skeleton-text>
+          </h3>
+          <p style="display: flex; gap: 6px;">
+            <span style="width: 20%;">
+              <ion-skeleton-text
+                [animated]="true"
+              ></ion-skeleton-text>
+            </span>
+            <span style="width: 20%;">
+              <ion-skeleton-text
+                [animated]="true"
+              ></ion-skeleton-text>
+            </span>
+            <span style="width: 10%;">
+              <ion-skeleton-text
+                [animated]="true"
+                style="border-radius: 20px;"
+              ></ion-skeleton-text>
+            </span>
+          </p>
+        </ion-label>
+      </ion-item>
+      <ion-list-header>
+        <ion-skeleton-text
+          [animated]="true"
+          style="width: 80px"
+        ></ion-skeleton-text>
+      </ion-list-header>
+      <ion-item *ngFor="let i of [0, 1]" style="height: 90px; --inner-padding-end: 0; display: flex;">
+        <ion-thumbnail
+          slot="end"
+          style="border-radius: 7px; overflow: hidden; height: 60px; width: 70px;"
+        >
+          <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+        </ion-thumbnail>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text
+              [animated]="true"
+              style="width: 80%"
+            ></ion-skeleton-text>
+          </h3>
+          <p style="display: flex; gap: 6px;">
+            <span style="width: 20%;">
+              <ion-skeleton-text
+                [animated]="true"
+              ></ion-skeleton-text>
+            </span>
+            <span style="width: 20%;">
+              <ion-skeleton-text
+                [animated]="true"
+              ></ion-skeleton-text>
+            </span>
+            <span style="width: 10%;">
+              <ion-skeleton-text
+                [animated]="true"
+                style="border-radius: 20px;"
+              ></ion-skeleton-text>
+            </span>
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
   </ion-grid>
 </ion-accordion-group>

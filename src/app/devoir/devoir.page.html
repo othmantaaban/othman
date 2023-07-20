@@ -112,7 +112,7 @@
                   <div>hello</div>
                 </ng-container>
               </div>
-
+              <div class="line"></div>
               <ion-footer mode="md">
                 <ion-button
                   shape="round"
@@ -254,10 +254,10 @@
           style="width: 80px"
         ></ion-skeleton-text>
       </ion-list-header>
-      <ion-item *ngFor="let i of [0, 1, 2, 3]">
+      <ion-item *ngFor="let i of [0, 1, 2, 3]" style="height: 90px; --inner-padding-end: 0; display: flex;">
         <ion-thumbnail
-          slot="start"
-          style="border-radius: 50%; overflow: hidden"
+          slot="end"
+          style="border-radius: 7px; overflow: hidden; height: 60px; width: 70px;"
         >
           <ion-skeleton-text [animated]="true"></ion-skeleton-text>
         </ion-thumbnail>
@@ -268,11 +268,23 @@
               style="width: 80%"
             ></ion-skeleton-text>
           </h3>
-          <p>
-            <ion-skeleton-text
-              [animated]="true"
-              style="width: 60%"
-            ></ion-skeleton-text>
+          <p style="display: flex; gap: 6px;">
+            <span style="width: 20%;">
+              <ion-skeleton-text
+                [animated]="true"
+              ></ion-skeleton-text>
+            </span>
+            <span style="width: 20%;">
+              <ion-skeleton-text
+                [animated]="true"
+              ></ion-skeleton-text>
+            </span>
+            <span style="width: 10%;">
+              <ion-skeleton-text
+                [animated]="true"
+                style="border-radius: 20px;"
+              ></ion-skeleton-text>
+            </span>
           </p>
         </ion-label>
       </ion-item>
@@ -282,10 +294,10 @@
           style="width: 80px"
         ></ion-skeleton-text>
       </ion-list-header>
-      <ion-item *ngFor="let i of [0, 1]">
+      <ion-item *ngFor="let i of [0, 1]" style="height: 90px; --inner-padding-end: 0; display: flex;">
         <ion-thumbnail
-          slot="start"
-          style="border-radius: 50%; overflow: hidden"
+          slot="end"
+          style="border-radius: 7px; overflow: hidden; height: 60px; width: 70px;"
         >
           <ion-skeleton-text [animated]="true"></ion-skeleton-text>
         </ion-thumbnail>
@@ -296,11 +308,23 @@
               style="width: 80%"
             ></ion-skeleton-text>
           </h3>
-          <p>
-            <ion-skeleton-text
-              [animated]="true"
-              style="width: 60%"
-            ></ion-skeleton-text>
+          <p style="display: flex; gap: 6px;">
+            <span style="width: 20%;">
+              <ion-skeleton-text
+                [animated]="true"
+              ></ion-skeleton-text>
+            </span>
+            <span style="width: 20%;">
+              <ion-skeleton-text
+                [animated]="true"
+              ></ion-skeleton-text>
+            </span>
+            <span style="width: 10%;">
+              <ion-skeleton-text
+                [animated]="true"
+                style="border-radius: 20px;"
+              ></ion-skeleton-text>
+            </span>
           </p>
         </ion-label>
       </ion-item>

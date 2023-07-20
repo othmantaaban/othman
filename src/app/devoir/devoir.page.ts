@@ -58,13 +58,13 @@ export class DevoirPage implements OnInit {
       this.group.value = undefined
       this.cdr.detectChanges();
       this.sendNotification(res.non_validated_devoirs.length)
-
+      this.dataIsLoad = false;
     });
 
 
   }
   ionViewDidEnter() {
-    this.dataIsLoad = false;
+    // this.dataIsLoad = false;
   }
   getDevoirContent() {
     const devoirId = this.group.value;
@@ -98,9 +98,9 @@ export class DevoirPage implements OnInit {
 
   downloadPic($event, fileUrl: string, name) {
     $event.preventDefault();
-    
+
     console.log("pic doz");
-    
+
     this.file.downloadImage(fileUrl, name)
   }
 
@@ -110,7 +110,7 @@ export class DevoirPage implements OnInit {
 
 
   seePdf(fileUrl, fileName : string) {
-    const type = fileName.split(".") 
+    const type = fileName.split(".")
     if(type[1] === "pdf") {
       this.notificationService.openIFrame(fileUrl, fileName)
     }

@@ -11,7 +11,7 @@
         </ion-title>
       </ion-col>
     </ion-row>
-    <ion-row class="album">
+    <ion-row class="album" *ngIf="albums.length > 0">
       <ion-col
         class="album-col-parent"
         *ngFor="let album of albums; let i = index"
@@ -26,12 +26,8 @@
           >
             <div class="image">
               <ion-img
-                [src]="album.mainImage"
-                class="albuToValide"
-                alt=""
-              ></ion-img>
-              <ion-img
-                [src]="album.mainImage"
+                *ngFor="let mainPic of album.mainImage"
+                [src]="mainPic"
                 class="albuToValide"
                 alt=""
               ></ion-img>
@@ -68,7 +64,7 @@
           <div slot="content" class="accordion-content">
             <div class="album" *ngIf="albumContent !== {}">
               <div class="content" [innerHTML]="albumContent['content']"></div>
-              <div class="main" *ngIf="albumContent['images'] && albumContent['images'].length !== 0">
+              <div class="main" *ngIf="albumContent['images'] && album.imageCount > 0">
                 <ion-button
                   class="navigation nextEl"
                   (click)="goToNext('swiper' + album.Id)"
@@ -100,6 +96,7 @@
                   </span>
                 </ion-badge>
                 <swiper-container
+                  #swiperContainer
                   [loop]="true"
                   class="albumSwiperContainer"
                   [id]="'swiper' + album.Id"
@@ -109,21 +106,6 @@
                   <swiper-slide>
                   </swiper-slide>
                 </swiper-container>
-                 <!-- <swiper-container
-                  [loop]="true"
-                  class="albumSwiperContainer"
-                  [id]="'swiper' + album.Id"
-                  [pagination]="PaginationConfig"
-                  [slidesPerView]="1"
-                >
-
-                    <swiper-slide class='album' *ngFor="let item of [1,2,3,4]; let i = index;  " >
-                      <ion-img class='slidePicTest' [src]="albumContent['images'][i]" alt="" loading="lazy"></ion-img>
-                      <ion-button class="remove" shape="round" (click)='removePic()'>
-                      </ion-button>
-                  </swiper-slide>
-                  <swiper-slide></swiper-slide>
-                </swiper-container>  -->
               </div>
             </div>
             <div class="line"></div>
@@ -143,6 +125,11 @@
             </ion-footer>
           </div>
         </ion-accordion>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="albums.length === 0" class="no-data">
+      <ion-col>
+        Aucune donnée disponible
       </ion-col>
     </ion-row>
   </ion-grid>

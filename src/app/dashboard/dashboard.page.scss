@@ -154,6 +154,8 @@ ion-menu {
       border-radius: 6px;
       padding: 0;
 
+
+
       ion-row {
         align-items: center;
         height: 52px;
@@ -213,6 +215,8 @@ ion-menu {
     text-align: center;
     color: #BCBCBC;
     padding-bottom: 60px;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
 
     &::before {
       display: none;
@@ -456,6 +460,16 @@ ion-title.title-style {
             background-color: #DFDFDF;
           }
         }
+
+        &.no-data {
+          height: 200px;
+          border-radius: 10px;
+          background-color: #eee;
+          display: grid;
+          place-items: center;
+          text-align: center;
+          font-weight: 700;
+        }
       }
 
 
@@ -526,10 +540,11 @@ ion-title.title-style {
         }
       }
 
-      .devoirvalidation {
+      .validation {
         position: absolute;
         width: 100%;
-        height: 100%;
+        height: 0;
+        opacity: 0;
         top: 0px;
         left: 0;
         display: flex;

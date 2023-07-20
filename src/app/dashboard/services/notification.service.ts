@@ -1,20 +1,19 @@
 import { Injectable } from '@angular/core';
-import { AnimationController, ModalController, ModalOptions, ToastController } from '@ionic/angular';
+import { AnimationController, ToastController } from '@ionic/angular';
 import { Subject } from 'rxjs';
-import { PdfPage } from 'src/app/pdf/pdf.page';
+// import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 // import { PdfPage } from 'src/app/pdf/pdf.page';
-
+import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
   private notificationSubject = new Subject<string>();
   notification$ = this.notificationSubject.asObservable()
+  private iab : InAppBrowser = new InAppBrowser()
   constructor(
     private animationCtrl: AnimationController,
     private toastController: ToastController,
-    private modalCtrl: ModalController
-
   ) {
   }
 
@@ -39,17 +38,35 @@ export class NotificationService {
   }
 
 
-  animationMethode(element: any, methode: Function,) {
+  closeValidation(element: any, methode: Function,) {
+    element.querySelector("ion-button").disabled = true;
+    
     const animation = this.animationCtrl.create()
       .addElement(element)
       .duration(500)
-      // .fromTo('opacity', '1', '0')
-      .fromTo('height', element.offsetHeight + 'px', 'initial')
-      // .fromTo('margin',  '10px', '0')
-      .onFinish(() => methode())
+      .fromTo('opacity', '1', '0')
+      .fromTo('height', '100%', '0')
+      .onFinish(() => {
+        element.style.display = 'none';
+        methode()
+      })
       .easing('cubic-bezier(0.42,0.72,0,1)')
     animation.play()
   }
+
+  openValidation(element: any, methode: Function,) {
+    element.querySelector("ion-button").disabled = false;
+    
+    const animation = this.animationCtrl.create()
+    .addElement(element)
+    .duration(400)
+    .fromTo('opacity', '0', '1')
+    .fromTo('height', '0', '100%')
+    .onFinish(() => methode())
+    .easing('cubic-bezier(0.42,0.72,0,1)')
+    element.style.display = 'flex';
+    animation.play()
+    }
 
   async presentToast(msg: string, isValid: boolean) {
     const toast = await this.toastController.create({
@@ -68,18 +85,12 @@ export class NotificationService {
   }
 
   async openIFrame(url: string, fileName : string) {
-    // const modalOpt : ModalOptions = 
-    const modal = await this.modalCtrl.create({
-      component: PdfPage,
-      componentProps: {
-        link: url,
-        name: fileName
-      },
-      mode: "ios",
-      initialBreakpoint: 1,
-      breakpoints: [0, 0.75, 1],
-      animated: true
-    })
-    modal.present()
-  }
+    // const x = new InAppBrowser()
+      console.log(this.iab.create(url, "_self"));
+      
+    //   const browser = this.iab.create('https://ionicframework.com/')
+    //   browser.on('loadstop').subscribe(event => {
+    //     browser.insertCSS({ code: "body{color: red;" });
+    //  });
+  } 
 }

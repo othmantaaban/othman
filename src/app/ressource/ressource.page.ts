@@ -46,6 +46,10 @@ export class RessourcePage implements OnInit {
     this.dataIsLoad = true;
     this.initialize();
   }
+
+  ionViewWillLeave() {
+    this.group.value = undefined
+  }
   initialize() {
     this.non_validated_ressources = [];
     this.validated_ressources = [];
@@ -63,18 +67,17 @@ export class RessourcePage implements OnInit {
   }
   getRessourceContent() {
     const ressourceId = this.group.value;
-    console.log(ressourceId);
-
-
     if (ressourceId !== undefined) {
-      console.log(this.contentIsLoad, "hello 2");
+      console.log("start", new Date());
+      
+      // console.log(this.contentIsLoad, "hello 2");
       const data = this.ressourcesService.getRessourceContent(+ressourceId);
       data.subscribe((elt) => {
         this.ressourceContent = elt;
-        console.log(this.ressourceContent);
 
         this.contentIsLoad = false;
         this.cdr.detectChanges();
+        console.log("done", new Date());
       })
     }
 
@@ -100,15 +103,27 @@ export class RessourcePage implements OnInit {
   }
 
 
-  closeAccordion(event: any, id: number) {
-    // const eltRef = event.target.closest('ion-accordion');
-
-    this.group.value = undefined
-    // this.notificationService.animationMethode(eltRef, () => {
-    //   this.group.value = undefined
-    // })
+  closeValidation(event: any, id: number) {
+    const eltRef = event.target.closest('.validation');
+    this.notificationService.closeValidation(eltRef, () => {})
   }
 
+  async openValidation(event) {
+    console.log(this.group.value);
+    console.log(this.group.value !== undefined);
+    
+    setTimeout(()=> {
+      this.cdr.detectChanges();
+      if(this.group.value !== undefined) {
+        const eltRef = event.target.closest("ion-accordion").querySelector(".validation")
+        console.log(this.group.value);
+      
+        this.notificationService.openValidation(eltRef, () => {})
+      }
+      }, 100)
+    
+    
+  }
   splitFileNameToArray(name: string): string[] {
     return name.split('.');
   }

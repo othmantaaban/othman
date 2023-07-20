@@ -63,18 +63,21 @@ export class DevoirPage implements OnInit {
 
 
   }
-  ionViewDidEnter() {
-    // this.dataIsLoad = false;
+  ionViewWillLeave() {
+    this.group.value = undefined
   }
   getDevoirContent() {
     const devoirId = this.group.value;
 
     if (devoirId !== undefined) {
-      console.log(this.contentIsLoad, "hello 2");
+      this.contentIsLoad = true
+      // console.log(this.contentIsLoad, "hello 2");
       const data = this.devoirsService.getDevoirContent(+devoirId);
       data.subscribe((elt) => {
-        this.devoirContent = elt;
-        this.contentIsLoad = false;
+        // setTimeout(() => {
+          this.devoirContent = elt;
+          this.contentIsLoad = false;
+        // }, 200)
         this.cdr.detectChanges();
       })
     }
@@ -111,18 +114,30 @@ export class DevoirPage implements OnInit {
 
   seePdf(fileUrl, fileName : string) {
     const type = fileName.split(".")
-    if(type[1] === "pdf") {
-      this.notificationService.openIFrame(fileUrl, fileName)
-    }
+    this.notificationService.openIFrame(fileUrl, fileName)
+    
   }
 
-  closeAccordion(event: any, id: number) {
-    // const eltRef = event.target.closest('ion-accordion');
+  closeValidation(event: any, id: number) {
+    const eltRef = event.target.closest('.validation');
+    this.notificationService.closeValidation(eltRef, () => {})
+  }
 
-    this.group.value = undefined
-    // this.notificationService.animationMethode(eltRef, () => {
-    //   this.group.value = undefined
-    // })
+  async openValidation(event) {
+    console.log(this.group.value);
+    console.log(this.group.value !== undefined);
+    
+    setTimeout(()=> {
+      this.cdr.detectChanges();
+      if(this.group.value !== undefined) {
+        const eltRef = event.target.closest("ion-accordion").querySelector(".validation")
+        const x = event.target.closest("ion-accordion")
+        console.log(x.querySelector(".validation"));
+      
+        this.notificationService.openValidation(eltRef, () => {})
+      }
+    }, 60)
+    
   }
 
 

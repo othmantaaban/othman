@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component,  OnInit, ViewChild } from '@angular/core';
-import { IonAccordionGroup, IonButton, IonIcon, IonicSlides } from '@ionic/angular';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AlertButton, AlertController, IonAccordionGroup, IonButton, IonIcon, IonicSlides } from '@ionic/angular';
 import { AlbumService } from './service/album.service';
 import { NotificationService } from '../dashboard/services/notification.service';
 import Swiper from 'swiper';
@@ -12,13 +12,14 @@ import { SwiperSlide } from 'swiper/element';
 })
 export class AlbumPage implements OnInit {
   swiperModules = [IonicSlides]
-  @ViewChild('albumAccordion') group : IonAccordionGroup;
+  @ViewChild('albumAccordion') group: IonAccordionGroup;
+  @ViewChild('swiperContainer') swiperContainerRef!: ElementRef;
   PaginationConfig = {
     type: 'custom',
     renderCustom: (swiper: any, current: any, total: any) => {
       const swiperParent = swiper.el.previousElementSibling;
 
-      swiperParent.innerHTML =  `
+      swiperParent.innerHTML = `
         <ion-img src='assets/imageIcon.svg'></ion-img>
         <span>
           <span style='font-weight: bold;'>${current}/</span>
@@ -29,15 +30,16 @@ export class AlbumPage implements OnInit {
     },
   };
 
+  firstCall = true;
+  albums: Array<any> = [];
+  albumContent: Object = {};
 
-  albums : Array<any> = [];
-  albumContent : Object = {};
-
-  activeIndex : number = 1
+  activeIndex: number = 1
   constructor(
-    private albumService : AlbumService,
-    private cdr : ChangeDetectorRef,
-    private notificationService : NotificationService,
+    private albumService: AlbumService,
+    private cdr: ChangeDetectorRef,
+    private notificationService: NotificationService,
+    private alert: AlertController
   ) { }
 
   ngOnInit() {
@@ -46,6 +48,11 @@ export class AlbumPage implements OnInit {
   ionViewWillEnter() {
     this.initialize()
   }
+
+  ionViewWillLeave() {
+    this.group.value = undefined
+  }
+
   initialize() {
     const data = this.albumService.getAlbums()
 
@@ -55,8 +62,8 @@ export class AlbumPage implements OnInit {
     })
   }
 
-  goToNext(swiperRef : any) {
-    const swiperElt =  document.querySelector(`#${swiperRef}`) as any;
+  goToNext(swiperRef: any) {
+    const swiperElt = document.querySelector(`#${swiperRef}`) as any;
     const swiper = swiperElt.swiper
     // console.log();
     // swiper.pagination = this.PaginationConfig
@@ -66,8 +73,8 @@ export class AlbumPage implements OnInit {
 
     swiper.slideNext()
   }
-  goToPrev(swiperRef : any) {
-    const swiperElt =  document.querySelector(`#${swiperRef}`) as any;
+  goToPrev(swiperRef: any) {
+    const swiperElt = document.querySelector(`#${swiperRef}`) as any;
     const swiper = swiperElt.swiper
     swiper.slidePrev()
   }
@@ -91,58 +98,83 @@ export class AlbumPage implements OnInit {
 
 
 
-    if(albumId !== undefined) {
-      const swiperElt =  document.querySelector(`#swiper${albumId}`) as any;
-      const data =this.albumService.getAlbumContent(+albumId)
+    if (albumId !== undefined) {
+      const data = this.albumService.getAlbumContent(+albumId)
 
-      data.subscribe(elt=> {
-        if(swiperElt) {
-          const swiper = swiperElt.swiper as Swiper
-          const swperSlideElt = (pic) => {
-            const swiperSlide = document.createElement("swiper-slide") as SwiperSlide
-            swiperSlide.className = "album"
-            const IonBtn = document.createElement("ion-button") as HTMLIonButtonElement;
-            console.log(pic);
-
-            IonBtn.addEventListener("click", () => this.removePic(pic.id));
-            IonBtn.className = "remove"
-            IonBtn.shape = "round"
-            const IonIcon = document.createElement("ion-icon") as HTMLIonIconElement
-            IonIcon.name = "trash-outline"
-            // "<ion-icon name='trash-outline'></ion-icon>"
-            IonBtn.appendChild(IonIcon)
-            const ionImg = document.createElement("ion-img") as HTMLIonImgElement
-            ionImg.src = pic.file
-            swiperSlide.appendChild(ionImg)
-            swiperSlide.appendChild(IonBtn)
-
-            return swiperSlide
-          }
-          swiper.removeAllSlides()
-          if(elt.images) {
-            elt.images.map((pic, i) => {
-              swiper.addSlide(i + 1, swperSlideElt(pic))
-            })
-
-          }
-        }
+      data.subscribe(elt => {
         this.albumContent = elt
-       })
+        setTimeout(() => {
+          const swiperElt = document.querySelector(`#swiper${albumId}`) as any;
+
+          if (swiperElt) {
+            const swiper = swiperElt.swiper as Swiper
+            const swperSlideElt = (pic) => {
+              const swiperSlide = document.createElement("swiper-slide") as SwiperSlide
+              swiperSlide.className = "album"
+              const IonBtn = document.createElement("ion-button") as HTMLIonButtonElement;
+              console.log(pic);
+
+              IonBtn.addEventListener("click", () => this.removePic(pic.id));
+              IonBtn.className = "remove"
+              IonBtn.shape = "round"
+              const IonIcon = document.createElement("ion-icon") as HTMLIonIconElement
+              IonIcon.name = "trash-outline"
+              // "<ion-icon name='trash-outline'></ion-icon>"
+              IonBtn.appendChild(IonIcon)
+              const ionImg = document.createElement("ion-img") as HTMLIonImgElement
+              ionImg.src = pic.file
+              swiperSlide.appendChild(ionImg)
+              swiperSlide.appendChild(IonBtn)
+
+              return swiperSlide
+            }
+            swiper.removeAllSlides()
+            console.log(swiper);
+
+            if (elt.images) {
+              elt.images.map((pic, i) => {
+                swiper.addSlide(i + 1, swperSlideElt(pic))
+              })
+
+            }
+          }
+        }, 1)
+      })
     }
   }
 
-  removePic(devoirId) {
-    const data = this.albumService.setAlbumValid(devoirId, "deletePic");
-    data.subscribe(res => {
-        const swiperElt =  document.querySelector(`#swiper${this.group.value}`) as any;
-        const swiper =  swiperElt.swiper as Swiper
-        swiper.removeSlide(swiper.activeIndex);
-        // this.initialize()
+  async removePic(devoirId) {
 
-        const Index =  this.albums.findIndex(elt => elt.Id == this.group.value)
-        this.albums[Index].imageCount = res.countPic
-        this.notificationService.presentToast(res.msg, res.valide)
-      // })
+    // const buttons : AlertButton = 
+    const alertRemove = await this.alert.create({
+      header: "Êtes-vous sûr?",
+      subHeader: "Vous ne pourrez pas récupérer!",
+      buttons: [
+        {
+          text: "Oui je suis sûr!",
+          handler: () => {
+            const data = this.albumService.setAlbumValid(devoirId, "deletePic");
+            data.subscribe(res => {
+              const swiperElt = document.querySelector(`#swiper${this.group.value}`) as any;
+              const swiper = swiperElt.swiper as Swiper
+              swiper.removeSlide(swiper.activeIndex);
+
+              const Index = this.albums.findIndex(elt => elt.Id == this.group.value)
+              this.albums[Index].imageCount -= 1
+              this.notificationService.presentToast(res.msg, res.valide)
+
+            })
+          }
+        },
+        {
+          text: "Non, annulez-le!",
+          handler: async () => {
+            await this.alert.dismiss()
+          }
+        }
+      ]
     })
+
+    alertRemove.present()
   }
 }

@@ -12,19 +12,18 @@
           </ion-title>
         </ion-col>
       </ion-row>
-      <ion-row class="devoir">
+      <ion-row class="devoir" *ngIf="non_validated_devoirs.length > 0">
         <ion-col
           class="devoir-col-parent"
           size-sm="12"
           size-lg="6"
           *ngFor="let devoir of non_validated_devoirs"
         >
-          <ion-accordion [value]="devoir.Id">
-            <div
-              class="accordion-header"
-              slot="header"
-              (mousedown)="$event.preventDefault()"
-            >
+          <ion-accordion
+            (mousedown)="$event.preventDefault()"
+            [value]="devoir.Id"
+          >
+            <div class="accordion-header" slot="header">
               <div class="info">
                 <p class="devoir-name">
                   {{ devoir.label }}
@@ -63,10 +62,10 @@
               </div>
             </div>
             <ion-grid slot="content" class="accordion-content">
-              <div class="devoirs">
+              <div class="devoirs" *ngIf="!contentIsLoad">
                 <!-- <ng-container *ngIf="contentIsLoad"> -->
                 <ng-container
-                  *ngIf="devoirContent !== undefined && devoirContent !== null && devoirContent !== {} && !contentIsLoad"
+                  *ngIf="devoirContent !== undefined && devoirContent !== null && devoirContent !== {}"
                 >
                   <div
                     class="text-content"
@@ -80,7 +79,11 @@
                     <div class="fileName">
                       {{ devoirContent["file"].fileName }}
                     </div>
-                    <ion-icon name="eye-outline" class="fileBtn" (click)="seePdf(devoirContent['file'].fileLink, devoirContent['file'].fileName)"></ion-icon>
+                    <ion-icon
+                      name="eye-outline"
+                      class="fileBtn"
+                      (click)="seePdf(devoirContent['file'].fileLink, devoirContent['file'].fileName)"
+                    ></ion-icon>
 
                     <!-- <a [href]="devoirContent['file'].fileLink" [download]="devoirContent['file'].fileName"> -->
                     <ion-img
@@ -112,6 +115,7 @@
                   <div>hello</div>
                 </ng-container>
               </div>
+              <div class="devoirs" *ngIf="contentIsLoad">hello</div>
               <div class="line"></div>
               <ion-footer mode="md">
                 <ion-button
@@ -131,12 +135,17 @@
           </ion-accordion>
         </ion-col>
       </ion-row>
+      <ion-row *ngIf="non_validated_devoirs.length === 0" class="no-data">
+        <ion-col>
+          Aucune donnée disponible
+        </ion-col>
+      </ion-row>
       <ion-row class="header-title">
         <ion-col size="12">
           <ion-title mode="md" class="title-style"> Devoirs validés </ion-title>
         </ion-col>
       </ion-row>
-      <ion-row class="devoir">
+      <ion-row class="devoir" *ngIf="validated_devoirs.length > 0">
         <ion-col
           *ngFor="let devoir of validated_devoirs"
           class="devoir-col-parent"
@@ -148,6 +157,7 @@
               class="accordion-header"
               slot="header"
               (mousedown)="$event.preventDefault()"
+              (click)="openValidation($event)"
             >
               <div class="info">
                 <p class="devoir-name">
@@ -188,62 +198,66 @@
               </div>
             </div>
             <ion-grid slot="content" class="accordion-content">
-              <div class="devoirs">
-                <ng-container
-                  *ngIf="devoirContent !== undefined && devoirContent !== null && devoirContent !== {} && !contentIsLoad"
+              <div
+                class="devoirs"
+                *ngIf="devoirContent !== undefined && devoirContent !== null && devoirContent !== {}"
+              >
+                <div
+                  class="validation"
+                  [class.nvalide]="!devoirContent['visible'] && devoirContent['visible'] !== null"
+                  [class.valide]="devoirContent['visible']"
                 >
-                  <div
-                    (click)="closeAccordion($event, devoir.Id)"
-                    class="devoirvalidation"
-                    [class.nvalide]="!devoirContent['visible']"
-                    [class.valide]="devoirContent['visible']"
+                  <ion-icon name="close-outline" class="icon"></ion-icon>
+                  <span
+                    >Devoir <span *ngIf="!devoirContent['visible']">rejeté</span
+                    ><span *ngIf="devoirContent['visible']">validé</span>
+                  </span>
+                  <ion-button
+                    class="absolute"
+                    fill="outline"
+                    shape="round"
+                    (click)="closeValidation($event, devoir.Id)"
                   >
-                    <ion-icon name="close-outline" class="icon"></ion-icon>
-                    <span
-                      >Devoir
-                      <span *ngIf="!devoirContent['visible']">rejeté</span
-                      ><span *ngIf="devoirContent['visible']">validé</span>
-                    </span>
-                    <ion-button
-                      class="absolute"
-                      fill="outline"
-                      shape="round"
-                      (click)="valideDevoir($event, devoir.Id)"
-                    >
-                      <ion-icon name="reload-outline" slot="start"></ion-icon>
-                      Revoire
-                    </ion-button>
+                    <ion-icon name="reload-outline" slot="start"></ion-icon>
+                    Revoire
+                  </ion-button>
+                </div>
+                <div
+                  class="text-content"
+                  [innerHTML]="devoirContent['content']"
+                ></div>
+                <span class="download" *ngIf="devoirContent['file']">
+                  <ion-img src="assets/pdf.png" class="fileType"></ion-img>
+                  <div class="fileName">
+                    {{ devoirContent["file"].fileName }}
                   </div>
-                  <div
-                    class="text-content"
-                    [innerHTML]="devoirContent['content']"
-                  ></div>
-                  <span class="download" *ngIf="devoirContent['file']">
-                    <ion-img src="assets/pdf.png" class="fileType"></ion-img>
-                    <div class="fileName">document-Admin...pdf</div>
-                    <ion-icon name="eye-outline" class="fileBtn"></ion-icon>
-                    <ion-img src="assets/downloads.svg" class="fileBtn">
-                    </ion-img>
-                  </span>
-                  <span class="download image" *ngIf="devoirContent['image']">
-                    <ion-img
-                      [src]="devoirContent['image']"
-                      class="mainPic"
-                    ></ion-img>
-                    <ion-img
-                      (click)="downloadFile(devoirContent['file'].fileLink, devoirContent['file'].fileName)"
-                      src="assets/downloads.svg"
-                      class="fileBtn btnDown"
-                    ></ion-img>
-                    <ion-img
-                      src="assets/montagnes.svg"
-                      class="montagnes"
-                    ></ion-img>
-                  </span>
-                </ng-container>
+                  <ion-icon name="eye-outline" class="fileBtn"></ion-icon>
+                  <ion-img src="assets/downloads.svg" class="fileBtn">
+                  </ion-img>
+                </span>
+                <span class="download image" *ngIf="devoirContent['image']">
+                  <ion-img
+                    [src]="devoirContent['image']"
+                    class="mainPic"
+                  ></ion-img>
+                  <ion-img
+                    (click)="downloadFile(devoirContent['file'].fileLink, devoirContent['file'].fileName)"
+                    src="assets/downloads.svg"
+                    class="fileBtn btnDown"
+                  ></ion-img>
+                  <ion-img
+                    src="assets/montagnes.svg"
+                    class="montagnes"
+                  ></ion-img>
+                </span>
               </div>
             </ion-grid>
           </ion-accordion>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="validated_devoirs.length === 0" class="no-data">
+        <ion-col>
+          Aucune donnée disponible
         </ion-col>
       </ion-row>
     </ng-container>
@@ -254,10 +268,18 @@
           style="width: 80px"
         ></ion-skeleton-text>
       </ion-list-header>
-      <ion-item *ngFor="let i of [0, 1, 2, 3]" style="height: 90px; --inner-padding-end: 0; display: flex;">
+      <ion-item
+        *ngFor="let i of [0, 1, 2, 3]"
+        style="height: 90px; --inner-padding-end: 0; display: flex"
+      >
         <ion-thumbnail
           slot="end"
-          style="border-radius: 7px; overflow: hidden; height: 60px; width: 70px;"
+          style="
+            border-radius: 7px;
+            overflow: hidden;
+            height: 60px;
+            width: 70px;
+          "
         >
           <ion-skeleton-text [animated]="true"></ion-skeleton-text>
         </ion-thumbnail>
@@ -268,21 +290,17 @@
               style="width: 80%"
             ></ion-skeleton-text>
           </h3>
-          <p style="display: flex; gap: 6px;">
-            <span style="width: 20%;">
-              <ion-skeleton-text
-                [animated]="true"
-              ></ion-skeleton-text>
+          <p style="display: flex; gap: 6px">
+            <span style="width: 20%">
+              <ion-skeleton-text [animated]="true"></ion-skeleton-text>
             </span>
-            <span style="width: 20%;">
-              <ion-skeleton-text
-                [animated]="true"
-              ></ion-skeleton-text>
+            <span style="width: 20%">
+              <ion-skeleton-text [animated]="true"></ion-skeleton-text>
             </span>
-            <span style="width: 10%;">
+            <span style="width: 10%">
               <ion-skeleton-text
                 [animated]="true"
-                style="border-radius: 20px;"
+                style="border-radius: 20px"
               ></ion-skeleton-text>
             </span>
           </p>
@@ -294,10 +312,18 @@
           style="width: 80px"
         ></ion-skeleton-text>
       </ion-list-header>
-      <ion-item *ngFor="let i of [0, 1]" style="height: 90px; --inner-padding-end: 0; display: flex;">
+      <ion-item
+        *ngFor="let i of [0, 1]"
+        style="height: 90px; --inner-padding-end: 0; display: flex"
+      >
         <ion-thumbnail
           slot="end"
-          style="border-radius: 7px; overflow: hidden; height: 60px; width: 70px;"
+          style="
+            border-radius: 7px;
+            overflow: hidden;
+            height: 60px;
+            width: 70px;
+          "
         >
           <ion-skeleton-text [animated]="true"></ion-skeleton-text>
         </ion-thumbnail>
@@ -308,21 +334,17 @@
               style="width: 80%"
             ></ion-skeleton-text>
           </h3>
-          <p style="display: flex; gap: 6px;">
-            <span style="width: 20%;">
-              <ion-skeleton-text
-                [animated]="true"
-              ></ion-skeleton-text>
+          <p style="display: flex; gap: 6px">
+            <span style="width: 20%">
+              <ion-skeleton-text [animated]="true"></ion-skeleton-text>
             </span>
-            <span style="width: 20%;">
-              <ion-skeleton-text
-                [animated]="true"
-              ></ion-skeleton-text>
+            <span style="width: 20%">
+              <ion-skeleton-text [animated]="true"></ion-skeleton-text>
             </span>
-            <span style="width: 10%;">
+            <span style="width: 10%">
               <ion-skeleton-text
                 [animated]="true"
-                style="border-radius: 20px;"
+                style="border-radius: 20px"
               ></ion-skeleton-text>
             </span>
           </p>

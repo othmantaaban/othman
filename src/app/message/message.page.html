@@ -12,9 +12,9 @@
         size-lg="6"
         *ngFor="let item of messagesNonLus; let x = index"
       >
-        <ion-accordion [value]="x">
+        <ion-accordion (mousedown)="$event.preventDefault()" [value]="item.Id">
           <div class="accordion-header" slot="header">
-            <ion-img [src]="item.icon"></ion-img>
+            <ion-img [src]="item.pic"></ion-img>
             <div class="info">
               <p class="name">
                 {{ item.eleve }}
@@ -153,20 +153,19 @@
           size-lg="6"
           *ngFor="let item of messagesLus; let x = index"
         >
-          <ion-accordion>
+          <ion-accordion (mousedown)="$event.preventDefault()" [value]="item.Id">
             <div
               class="accordion-header"
               slot="header"
-              (click)="getMessages(item.userTo)"
             >
-              <ion-img [src]="item.icon"></ion-img>
+              <ion-img [src]="item.pic"></ion-img>
               <div class="info">
                 <p class="name">
-                  {{ item.eleve }}
-                  <span class="group-style group">{{ item.classe }}</span>
-                  <!-- <span class="enseignant">Enseignant</span> -->
+                  {{ item.userName }}
+                  <span class="group-style group" *ngIf="item.isStudent">{{ item.type }}</span>
+                  <span class="enseignant" *ngIf="!item.isStudent">Enseignant</span>
                 </p>
-                <p class="mini-content">{{ item.message }}</p>
+                <p class="mini-content">{{ item.lastMsg }}</p>
               </div>
               <div class="time-icon">
                 <span class="time"> {{ item.date }} </span>
@@ -174,7 +173,7 @@
                   <ion-icon
                     name="attach-outline"
                     class="link"
-                    *ngIf="item.Fichiers"
+                    *ngIf="item.hasFile"
                   ></ion-icon>
                   <ion-icon
                     name="chevron-down-outline"
@@ -185,7 +184,7 @@
             </div>
             <ion-grid slot="content" class="accordion-content">
               <div class="messages" [id]="'messages' + item.userTo">
-                <ng-container *ngIf="!MsgIsLoad">
+                <!-- <ng-container *ngIf="!MsgIsLoad">
                   <ng-container *ngFor="let m of selectedMsg; let i = index">
                     <ion-row
                       [class.otherUser]="+m.UserTo === 1"
@@ -223,7 +222,7 @@
                       *ngIf="selectedMsg.length - 1 !== i"
                     ></div>
                   </ng-container>
-                </ng-container>
+                </ng-container> -->
                 <ion-list *ngIf="MsgIsLoad">
                   <ion-list-header>
                     <ion-skeleton-text

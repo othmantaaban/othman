@@ -6,18 +6,24 @@ import { MessageService } from './service/message.service';
   templateUrl: './message.page.html',
   styleUrls: ['./message.page.scss'],
 })
-export class MessagePage {
+export class MessagePage implements OnInit {
   public messagesNonLus: Array<any> = [];
   public messagesLus: Array<any> = [];
   public selectedMsg: Array<any> = undefined;
   public MsgIsLoad: Boolean = false;
 
   constructor(private messageService: MessageService) {}
-
+  ngOnInit() {
+    let messages: any = this.messageService.getMessage();
+    this.messagesNonLus = messages?.messages_non_lu;
+    this.messagesLus = messages?.messages_lu;
+  }
   ionViewWillEnter() {
     let messages: any = this.messageService.getMessage();
     this.messagesNonLus = messages?.messages_non_lu;
     this.messagesLus = messages?.messages_lu;
+    
+
   }
 
   scrollDown(id) {
@@ -25,7 +31,7 @@ export class MessagePage {
       let element = document.querySelector(`#messages${id}`);
 
       if (element != null) {
-        console.log(element.scrollHeight);
+        // console.log(element.scrollHeight);
         element.scrollTop = element.scrollHeight;
       }
     }, 60);
@@ -34,11 +40,12 @@ export class MessagePage {
   private fetchMsg(userTo: number) {
     const fetch = this.messageService.getConversationMsg(userTo);
     fetch.subscribe((elt) => {
-      console.log(elt);
-      this.selectedMsg = elt;
+      // this.selectedMsg = elt;
+      console.log(this.selectedMsg);
+      
     });
   }
-  getMessages(userTo: number) {
+  private getMessages(userTo: number) {
     this.MsgIsLoad = true;
 
     this.fetchMsg(userTo);
@@ -51,20 +58,22 @@ export class MessagePage {
   }
 
   accordionChange($event) {
-    const userTo = $event.target.value;
-    if (userTo !== undefined) {
-      this.MsgIsLoad = true;
-      console.log(userTo);
+    const other = $event.target.value;
+    console.log(other);
+    this.getMessages(other)
+    // if (userTo !== undefined) {
+    //   this.MsgIsLoad = true;
+    //   console.log(userTo);
 
-      // setTimeout(() => {
-      this.fetchMsg(userTo);
-      if (this.selectedMsg === undefined) {
-        this.fetchMsg(userTo);
-      }
-      this.scrollDown(userTo);
-      // }, 6)
+    //   // setTimeout(() => {
+    //   this.fetchMsg(userTo);
+    //   if (this.selectedMsg === undefined) {
+    //     this.fetchMsg(userTo);
+    //   }
+    //   this.scrollDown(userTo);
+    //   // }, 6)
 
-      this.MsgIsLoad = false;
-    }
+    //   this.MsgIsLoad = false;
+    // }
   }
 }

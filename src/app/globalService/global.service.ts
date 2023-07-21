@@ -5,8 +5,8 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class GlobalService {
-  private url = "https://boti.education/p/demo/botiapi/admin_"
-  // private url = 'http://localhost/school_23/botiapi/';
+  // private url = "https://boti.education/p/demo/botiapi/admin_"
+  private url = 'http://localhost/school_23/botiapi/';
 
   constructor(private _http: HttpClient) {}
 
@@ -15,10 +15,8 @@ export class GlobalService {
     if (params !== null) {
       const httpParams = this.buildParams(params);
       req = this._http.get(`${this.url}${endPoint}`, { params: httpParams });
-      console.log(req);
     } else {
       req = this._http.get(`${this.url}${endPoint}`);
-      console.log(req);
     }
     return req;
   }

@@ -35,6 +35,8 @@ ion-accordion-group {
                 min-width: 51px;
                 min-height: 51px;
                 border-radius: 50%;
+                object-fit: fill;
+                overflow: hidden;
               }
               .info {
                 --ion-item-background: transparent;

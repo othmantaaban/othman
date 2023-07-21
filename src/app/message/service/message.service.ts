@@ -26,10 +26,6 @@ export class MessageService {
 
   getConversationMsg(otherId : number) {
     return this.global.getHttpClient(this.endPoint, { otherId : otherId })
-      
-
-
-
   }
 
 

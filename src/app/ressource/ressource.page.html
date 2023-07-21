@@ -37,10 +37,11 @@
               </div>
               <div class="info">
                 <p class="ressource-name">
-                  {{ nValidateR.label | slice:0:50 }}<span
-                    *ngIf="nValidateR.label.length > 50"
-                    >...</span
-                  >
+                  <span>
+                    {{ nValidateR.label | slice:0:50 }}<span
+                      *ngIf="nValidateR.label.length > 50"
+                      >...</span>
+                  </span>
                 </p>
                 <div class="mini-content">
                   <span class="par">
@@ -151,10 +152,11 @@
               </div>
               <div class="info">
                 <p class="ressource-name">
-                  {{ validated.label | slice:0:50 }}<span
-                    *ngIf="validated.label.length > 50"
-                    >...</span
-                  >
+                  <span>
+                    {{ validated.label | slice:0:50 }}<span
+                      *ngIf="validated.label.length > 50"
+                      >...</span>
+                  </span>
                 </p>
                 <div class="mini-content">
                   <span class="par">
@@ -190,7 +192,7 @@
                 <span>Ressource <span *ngIf="validated.visible">validée</span> <span *ngIf="!validated.visible">rejetée</span></span>
                 <ion-button class="absolute" fill="outline" shape="round" (click)="closeValidation($event, validated.Id)">
                   <ion-icon name="reload-outline" slot="start"></ion-icon>
-                  Revoire
+                  Annuler
                 </ion-button>
               </div>
               <div class="ressources">

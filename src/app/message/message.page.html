@@ -41,7 +41,7 @@
           </div>
           <ion-grid slot="content" class="accordion-content">
             <div class="messages" [id]="'messages' + item.userTo">
-              <ng-container *ngIf="!MsgIsLoad">
+              <!-- <ng-container *ngIf="!MsgIsLoad">
                 <ng-container *ngFor="let m of selectedMsg; let i = index">
                   <ion-row
                     [class.otherUser]="+m.UserTo === 1"
@@ -109,7 +109,10 @@
                     </p>
                   </ion-label>
                 </ion-item>
-              </ion-list>
+              </ion-list> -->
+                <div>
+                  <div class="div" *ngFor="let item of [1,1,1,1,11,11,11,1,11,11,1,11,1,1]"> jlzekjnckjze</div>
+                </div>
             </div>
             <ion-footer mode="md">
               <ion-row>

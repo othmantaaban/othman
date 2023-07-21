@@ -3,14 +3,14 @@ import { AnimationController, ToastController } from '@ionic/angular';
 import { Subject } from 'rxjs';
 // import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 // import { PdfPage } from 'src/app/pdf/pdf.page';
-import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
+// import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
   private notificationSubject = new Subject<string>();
   notification$ = this.notificationSubject.asObservable()
-  private iab : InAppBrowser = new InAppBrowser()
+  // private iab : InAppBrowser = new InAppBrowser()
   constructor(
     private animationCtrl: AnimationController,
     private toastController: ToastController,
@@ -40,7 +40,7 @@ export class NotificationService {
 
   closeValidation(element: any, methode: Function,) {
     element.querySelector("ion-button").disabled = true;
-    
+
     const animation = this.animationCtrl.create()
       .addElement(element)
       .duration(500)
@@ -56,7 +56,7 @@ export class NotificationService {
 
   openValidation(element: any, methode: Function,) {
     element.querySelector("ion-button").disabled = false;
-    
+
     const animation = this.animationCtrl.create()
     .addElement(element)
     .duration(400)
@@ -86,11 +86,11 @@ export class NotificationService {
 
   async openIFrame(url: string, fileName : string) {
     // const x = new InAppBrowser()
-      console.log(this.iab.create(url, "_self"));
-      
+      // console.log(this.iab.create(url, "_self"));
+
     //   const browser = this.iab.create('https://ionicframework.com/')
     //   browser.on('loadstop').subscribe(event => {
     //     browser.insertCSS({ code: "body{color: red;" });
     //  });
-  } 
+  }
 }

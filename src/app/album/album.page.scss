@@ -148,6 +148,7 @@ ion-accordion-group {
               padding: 0;
               .album {
                 margin-bottom: 20px;
+                margin-inline: 20px;
                 .main {
                   height: 100%;
                   position: relative;
@@ -182,10 +183,10 @@ ion-accordion-group {
                       min-height: 39px;
                     }
                     &.nextEl {
-                      right: 2px;
+                      right: -18px;
                     }
                     &.prevEl {
-                      left: 2px;
+                      left: 18px;
                     }
                   }
                   .side-fractions {
@@ -219,7 +220,7 @@ ion-accordion-group {
                       width: 39px;
                       min-width: 39px;
                       height: 39px;
-                      --translate-by: 18px;                      
+                      --translate-by: 18px;
                       &::part(image) {
                         border-radius: 50%;
                         border: 1px solid #FFF;
@@ -251,7 +252,6 @@ ion-accordion-group {
                     }
                   }
                   swiper-container {
-                    margin: 0 20px;
                     height: 291px;
                     border-radius: 13px;
                     // .album {
@@ -301,6 +301,7 @@ ion-accordion-group {
                   --padding-top: 25px;
                   --padding-bottom: 25px;
                   text-transform: initial;
+                  height: 52px;
                   &:first-child {
                     --color: #F65E40 !important;
                   }
@@ -329,13 +330,15 @@ ion-accordion-group {
               position: absolute;
               min-width: calc(100% - 10px);
               max-width: calc(100% - 10px);
-              padding: 30px 15px 00;
               .accordion-header  {
                 padding-bottom: 20px;
               }
-              
+
             }
             &.accordion-expanded{
+              .accordion-header {
+                padding: 30px 20px 20px;
+              }
               .image {
                 display: none;
               }
@@ -354,6 +357,9 @@ ion-accordion-group {
             &.accordion-collapsing {
               z-index: 1;
               position: absolute;
+              .accordion-header {
+                padding: 30px 20px 20px;
+              }
             }
           }
         }

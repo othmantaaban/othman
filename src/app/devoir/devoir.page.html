@@ -206,7 +206,9 @@
                   [class.nvalide]="!devoirContent['visible'] && devoirContent['visible'] !== null"
                   [class.valide]="devoirContent['visible']"
                 >
-                  <ion-icon name="close-outline" class="icon"></ion-icon>
+                  <!-- <ion-icon name="close-outline" class="icon"></ion-icon> -->
+                  <ion-icon [name]="devoirContent['visible'] ?'checkmark-outline' : 'close-outline'" class="icon"></ion-icon>
+
                   <span
                     >Devoir <span *ngIf="!devoirContent['visible']">rejeté</span
                     ><span *ngIf="devoirContent['visible']">validé</span>
@@ -230,8 +232,8 @@
                   <div class="fileName">
                     {{ devoirContent["file"].fileName }}
                   </div>
-                  <ion-icon name="eye-outline" class="fileBtn"></ion-icon>
-                  <ion-img src="assets/downloads.svg" class="fileBtn">
+                  <ion-icon name="eye-outline" class="fileBtn" (click)="seePdf(devoirContent['file'].fileLink, devoirContent['file'].fileName)"></ion-icon>
+                  <ion-img src="assets/downloads.svg" class="fileBtn" (click)="downloadFile(devoirContent['file'].fileLink, devoirContent['file'].fileName)">
                   </ion-img>
                 </span>
                 <span class="download image" *ngIf="devoirContent['image']">
@@ -240,7 +242,7 @@
                     class="mainPic"
                   ></ion-img>
                   <ion-img
-                    (click)="downloadFile(devoirContent['file'].fileLink, devoirContent['file'].fileName)"
+                    (click)="downloadPic($event, devoirContent['file'].fileLink, devoirContent['file'].fileName)"
                     src="assets/downloads.svg"
                     class="fileBtn btnDown"
                   ></ion-img>

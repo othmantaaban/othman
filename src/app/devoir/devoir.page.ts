@@ -115,7 +115,6 @@ export class DevoirPage implements OnInit {
   seePdf(fileUrl, fileName : string) {
     const type = fileName.split(".")
     this.notificationService.openIFrame(fileUrl, fileName)
-    
   }
 
   closeValidation(event: any, id: number) {
@@ -126,18 +125,18 @@ export class DevoirPage implements OnInit {
   async openValidation(event) {
     console.log(this.group.value);
     console.log(this.group.value !== undefined);
-    
+
     setTimeout(()=> {
       this.cdr.detectChanges();
       if(this.group.value !== undefined) {
         const eltRef = event.target.closest("ion-accordion").querySelector(".validation")
         const x = event.target.closest("ion-accordion")
         console.log(x.querySelector(".validation"));
-      
+
         this.notificationService.openValidation(eltRef, () => {})
       }
     }, 60)
-    
+
   }
 
 

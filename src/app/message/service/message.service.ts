@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { GlobalService } from 'src/app/globalService/global.service';
 
 @Injectable({
@@ -7,6 +8,8 @@ import { GlobalService } from 'src/app/globalService/global.service';
 export class MessageService {
   private data : Array<any>;
   private endPoint = "message_ens"
+  private messages = null;
+  // private messagees : Subject<MessageEvent>
   constructor(
     private global : GlobalService
   ) {
@@ -24,8 +27,20 @@ export class MessageService {
     return this.data
   }
 
-  getConversationMsg(otherId : number) {
-    return this.global.getHttpClient(this.endPoint, { otherId : otherId })
+  getConversationMsg(otherId : number, type) {
+    let x = this.global.getHttpClient(this.endPoint, { otherId : otherId, type: type })
+    return x
+    // return this.messages;
+    // Observable.interval(1000)
+    //   .startWith(0)
+    //   .switchMap(() => this.global.getHttpClient(this.endPoint));
+    // const x = this.global.getWebSocket(this.endPoint)
+    // console.log(x);
+
+    // x.map((res) => {
+    //   console.log(res);
+
+    // })
   }
 
 

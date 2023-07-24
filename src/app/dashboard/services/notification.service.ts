@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AnimationController, ToastController } from '@ionic/angular';
 import { Subject } from 'rxjs';
-// import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
+import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 // import { PdfPage } from 'src/app/pdf/pdf.page';
 // import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 @Injectable({
@@ -10,7 +10,7 @@ import { Subject } from 'rxjs';
 export class NotificationService {
   private notificationSubject = new Subject<string>();
   notification$ = this.notificationSubject.asObservable()
-  // private iab : InAppBrowser = new InAppBrowser()
+  private iab : InAppBrowser = new InAppBrowser()
   constructor(
     private animationCtrl: AnimationController,
     private toastController: ToastController,
@@ -86,7 +86,7 @@ export class NotificationService {
 
   async openIFrame(url: string, fileName : string) {
     // const x = new InAppBrowser()
-      // console.log(this.iab.create(url, "_self"));
+      console.log(this.iab.create(url, "_self"));
 
     //   const browser = this.iab.create('https://ionicframework.com/')
     //   browser.on('loadstop').subscribe(event => {

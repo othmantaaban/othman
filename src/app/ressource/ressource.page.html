@@ -20,7 +20,8 @@
           size-lg="6"
           *ngFor="let nValidateR of non_validated_ressources"
         >
-          <ion-accordion [value]="nValidateR.Id">
+
+            <ion-accordion [value]="nValidateR.Id" (mousedown)="$event.preventDefault()">
             <div
               class="accordion-header"
               (mousedown)="$event.preventDefault()"
@@ -91,7 +92,10 @@
                     . {{
                     splitFileNameToArray(ressourceContent['file'].fileName)[1] }}
                   </div>
-                  <ion-icon name="eye-outline" class="fileBtn"></ion-icon>
+                  <ion-icon name="eye-outline" class="fileBtn"
+                  (click)="seePdf(ressourceContent['file'].fileLink, ressourceContent['file'].fileName)"
+
+                  ></ion-icon>
                   <ion-img src="assets/downloads.svg" class="fileBtn" (click)="downloadFile(ressourceContent['file'].fileLink ,ressourceContent['file'].fileName)"></ion-img>
                 </span>
               </div>
@@ -134,7 +138,7 @@
           size-lg="6"
           *ngFor="let validated of validated_ressources"
         >
-          <ion-accordion [value]="validated.Id">
+          <ion-accordion [value]="validated.Id" (mousedown)="$event.preventDefault()">
             <div
               class="accordion-header"
               (mousedown)="$event.preventDefault()"
@@ -219,7 +223,9 @@
                     . {{
                     splitFileNameToArray(ressourceContent['file'].fileName)[1] }}
                   </div>
-                  <ion-icon name="eye-outline" class="fileBtn"></ion-icon>
+                  <ion-icon name="eye-outline" class="fileBtn"
+                  (click)="seePdf(ressourceContent['file'].fileLink, ressourceContent['file'].fileName)"
+                  ></ion-icon>
                   <ion-img src="assets/downloads.svg" class="fileBtn" (click)="downloadFile(ressourceContent['file'].fileLink ,ressourceContent['file'].fileName)"></ion-img>
                 </span>
               </div>

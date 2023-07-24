@@ -69,7 +69,7 @@ export class RessourcePage implements OnInit {
     const ressourceId = this.group.value;
     if (ressourceId !== undefined) {
       console.log("start", new Date());
-      
+
       // console.log(this.contentIsLoad, "hello 2");
       const data = this.ressourcesService.getRessourceContent(+ressourceId);
       data.subscribe((elt) => {
@@ -102,6 +102,10 @@ export class RessourcePage implements OnInit {
     this.file.downloadFile(fileUrl, name)
   }
 
+  seePdf(fileUrl, fileName : string) {
+    const type = fileName.split(".")
+    this.notificationService.openIFrame(fileUrl, fileName)
+  }
 
   closeValidation(event: any, id: number) {
     const eltRef = event.target.closest('.validation');
@@ -111,18 +115,18 @@ export class RessourcePage implements OnInit {
   async openValidation(event) {
     console.log(this.group.value);
     console.log(this.group.value !== undefined);
-    
+
     setTimeout(()=> {
       this.cdr.detectChanges();
       if(this.group.value !== undefined) {
         const eltRef = event.target.closest("ion-accordion").querySelector(".validation")
         console.log(this.group.value);
-      
+
         this.notificationService.openValidation(eltRef, () => {})
       }
       }, 100)
-    
-    
+
+
   }
   splitFileNameToArray(name: string): string[] {
     return name.split('.');

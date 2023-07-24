@@ -313,7 +313,13 @@ ion-menu {
 
   swiper-container {
     padding: 10px 10px 40px 15px;
-
+    --swiper-wrapper-transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1.000);
+    @media (min-width: 979px) {
+      & {
+        // min-width: calc(100% - 10px);
+        margin: auto;
+      }
+    }
     swiper-slide {
       width: 85px;
 
@@ -607,4 +613,26 @@ ion-title.title-style {
 #main {
   height: 100%;
   background: #FAFAFF;
+}
+
+
+.helloIts {
+  width: fit-content !important;
+  display: flex !important;
+  gap: 10px !important;
+  // margin-right: 10px !important;
+}
+
+swiper-container {
+  &::part(bullet) {
+    transition: .7s;
+    // background-color: red;
+    opacity: 1;
+  }
+  &::part(bullet-active) {
+    width: 26px;
+    border-radius: 25px;
+    transition: .7s;
+    // transition: 300ms;
+  }
 }

@@ -23,14 +23,16 @@ export class NotificationService {
 
 
   validateAnimation(element, method : Function) {
-    console.log(element);
-
+    // console.log(element);
+    console.log(element.offsetHeight);
+    
     const animation = this.animationCtrl.create()
       .addElement(element)
       .duration(500)
       .fromTo('opacity', '1', '0')
       .fromTo('height', element.offsetHeight + 'px', '0')
       .fromTo('min-height', "104px", '0')
+      // .fromTo('min-height', "104px", '0')
       // .fromTo('display',  'block', 'none')
       .onFinish(() => method())
       .easing('cubic-bezier(0.42,0.72,0,1)')

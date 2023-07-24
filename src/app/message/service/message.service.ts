@@ -43,5 +43,14 @@ export class MessageService {
     // })
   }
 
+  sendMessage(id: number , channel : string, message : string = null, files : Array<File> = null, type : string = null){
+    // if(!!message || !!files) {
+      console.log(message);
+      
+      return this.global.postHttpClient(this.endPoint, { message : message, files: files, channel : channel, Reqtype: type }, { converatation: id })
+    // }
+
+  }
+
 
 }

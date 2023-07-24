@@ -88,6 +88,7 @@ export class DevoirPage implements OnInit {
     // $event.stopPropagation();
     const data = this.devoirsService.setDevoirValid(devoirId, action);
     data.subscribe((res: any) => {
+      this.group.value = undefined
       const eltRef = $event.target.closest('ion-col');
       this.notificationService.validateAnimation(eltRef, () => {
         this.initialize()

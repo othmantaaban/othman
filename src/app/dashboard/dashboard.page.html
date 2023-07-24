@@ -101,14 +101,21 @@
     [spaceBetween]="10"
     [pagination]="{
         clickable: true,
-        bulletClass: 'swiper-pagination-bullet hello',
+        bulletClass: 'swiper-pagination-bullet hello', 
         bulletActiveClass: 'swiper-pagination-bullet-active active'
       }"
     [slidesPerView]="'auto'"
     [speed]="600"
+<<<<<<< HEAD
     (slidechange)="slidechange()"
   >
     <!-- <swiper-slide>
+=======
+    [injectStyles]="swiperInjStyle" 
+    
+  >
+    <swiper-slide >
+>>>>>>> 7751f288fd1b2f37b3d4941023ce2e7c8f3204fa
       <a
         routerLink="/dashboard/message"
         routerLinkActive="active"

@@ -153,7 +153,11 @@
           size-lg="6"
           *ngFor="let item of messagesLus; let x = index"
         >
+<<<<<<< HEAD
           <ion-accordion (mousedown)="$event.preventDefault()" [value]="item.isStudent ? 'student-' + item.Id : item.Id">
+=======
+          <ion-accordion (mousedown)="$event.preventDefault()" [value]="item.chatId">
+>>>>>>> 7751f288fd1b2f37b3d4941023ce2e7c8f3204fa
             <div
               class="accordion-header"
               slot="header"

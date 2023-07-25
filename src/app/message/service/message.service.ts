@@ -20,11 +20,9 @@ export class MessageService {
 
   getMessage()  {
     const x = this.global.getHttpClient(this.endPoint)
-    x.subscribe(elt => {
-      this.data = elt
-    })
+   
 
-    return this.data
+    return x
   }
 
   getConversationMsg(otherId : number, type) {

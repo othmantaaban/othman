@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { MessagePageRoutingModule } from './message-routing.module';
 
 import { MessagePage } from './message.page';
+import { ImagePicker } from '@awesome-cordova-plugins/image-picker/ngx';
 
 @NgModule({
   imports: [
@@ -15,6 +16,9 @@ import { MessagePage } from './message.page';
     IonicModule,
     MessagePageRoutingModule
   ],
-  declarations: [MessagePage]
+  declarations: [MessagePage],
+  providers:[
+    ImagePicker
+  ]
 })
 export class MessagePageModule {}

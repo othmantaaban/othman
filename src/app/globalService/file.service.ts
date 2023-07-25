@@ -5,6 +5,8 @@ import { HttpClient } from '@angular/common/http';
 // import { apiUrl, schoolName } from 'src/environments/environment';
 import { Media } from '@capacitor-community/media'
 import { AlertController } from '@ionic/angular';
+// import { ImagePicker } from '@awesome-cordova-plugins/image-picker/ngx';
+// import { ImagePickerOptions } from '@awesome-cordova-plugins/image-picker';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +20,8 @@ export class FileService {
   constructor(
     private apiservice: ApiService,
     private http: HttpClient,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    // private ImagePicker : ImagePicker
   ) {
       this.apiUrl = apiservice.apiUrl
   }
@@ -168,4 +171,25 @@ export class FileService {
     const blob = new Blob(byteArrays, { type: contentType });
     return blob;
   }
+
+
+  // async pickImagesFromGallery() {
+  //   console.log("open image picker")
+  //   const permission = await this.ImagePicker.hasReadPermission()
+  //   console.log("permission ", permission);
+    
+  //   if(permission === false) {
+  //     const reqPerm = await this.ImagePicker.requestReadPermission()
+  //     console.log("reqpermission ", reqPerm);
+  //   } else {
+  //     let options : ImagePickerOptions = {
+  //       maximumImagesCount: 6
+  //     }
+  //     let Images = this.ImagePicker.getPictures(options)
+  //     console.log(Images);
+      
+  //   }
+    
+  // }
+
 }

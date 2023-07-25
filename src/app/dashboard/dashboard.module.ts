@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
@@ -18,6 +18,9 @@ import { DashboardPage } from './dashboard.page';
   ],
   declarations: [
     DashboardPage,
+  ],
+  providers: [
+    DatePipe
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA

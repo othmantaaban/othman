@@ -1,7 +1,11 @@
-import { Component, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { MessageService } from './service/message.service';
-import { IonAccordionGroup } from '@ionic/angular';
+import { IonAccordionGroup, PopoverController } from '@ionic/angular';
 import { FileService } from '../globalService/file.service';
+import { DatePipe } from '@angular/common';
+import { ImagePicker } from '@awesome-cordova-plugins/image-picker/ngx';
+import { ImagePickerOptions } from '@awesome-cordova-plugins/image-picker';
+// import { ImagePickerOriginal } from '@awesome-cordova-plugins/image-picker';
 
 @Component({
   selector: 'app-message',
@@ -9,30 +13,44 @@ import { FileService } from '../globalService/file.service';
   styleUrls: ['./message.page.scss'],
 })
 export class MessagePage implements OnInit {
-  @ViewChild("messageGroup") group : IonAccordionGroup
+  @ViewChild("messageGroup") group: IonAccordionGroup
   public messagesNonLus: Array<any> = [];
   public messagesLus: Array<any> = [];
   public selectedMsg: Array<any> = undefined;
   public MsgIsLoad: Boolean = false;
-  public textVal : string;
-  // 
+  public textVal: string;
+  private observe;
+  public selectedOne: number = undefined;
 
   constructor(
     private messageService: MessageService,
-    private file : FileService,
-    private renderer: Renderer2
-  ) {}
+    private file: FileService,
+    private popoverController: PopoverController,
+    private cdr: ChangeDetectorRef,
+    private datePipe: DatePipe,
+    private ImagePick : ImagePicker
+  ) {
+    // const x = ImagePicker
+    // ImagePicker.getPictures({
+    //   maximumImagesCount: 2
+    // });
+    // ImagePicker.getPictures
+    
+   }
   ngOnInit() {
-    let messages: any = this.messageService.getMessage();
-    this.messagesNonLus = messages?.messages_non_lu;
-    this.messagesLus = messages?.messages_lu;
+
   }
   ionViewWillEnter() {
+    this.initialize()
+  }
+
+  initialize() {
     let messages: any = this.messageService.getMessage();
-    this.messagesNonLus = messages?.messages_non_lu;
-    this.messagesLus = messages?.messages_lu;
-
-
+    messages.subscribe((elt) => {
+      this.messagesNonLus = elt?.messages_non_lu;
+      this.messagesLus = elt?.messages_lu;
+      this.cdr.detectChanges();
+    })
   }
 
   scrollDown(id) {
@@ -48,39 +66,59 @@ export class MessagePage implements OnInit {
     }, 100)
   }
 
-  private fetchMsg(userTo: number, type : string = null) {
-    let fetch = this.messageService.getConversationMsg(userTo, type).subscribe((elt) => {
+  private fetchMsg(userTo: number, type: string = null) {
+
+    this.observe = this.messageService.getConversationMsg(userTo, type)
+    this.observe.subscribe((elt) => {
       this.selectedMsg = elt
+      console.log(this.selectedMsg);
+
+      setTimeout(() => {
+        this.MsgIsLoad = false;
+        this.cdr.detectChanges();
+        setTimeout(() => {
+          this.scrollDown(userTo);
+        }, 100)
+      }, 1000);
     })
 
   }
 
-  accordionChange() {
-    const other = this.group.value as string;
-    console.log(other);
-    if (other !== undefined) {
-      this.MsgIsLoad = true
-      // this.TimeoutGenerale = setTimeout(() => {
+  accordionChange(event) {
+    if (event.target.tagName !== "ION-TEXTAREA") {
+      console.log();
+
+      const other = this.group.value as string;
+      console.log(other);
+      if (this.observe) {
+        console.log(this.observe);
+
+        // this.observe.unsubscribe()
+        this.observe = undefined
+        this.selectedMsg = undefined;
+        this.MsgIsLoad = false
+        this.selectedOne = undefined
+      }
+      if (other !== undefined) {
+        this.MsgIsLoad = true
+        // setTimeout(() => {
         let type = null
         let userId = other
-        if(isNaN(+other)) {
+        if (isNaN(+other)) {
           type = 'eleve'
           userId = other.split('-')[1]
         }
 
         this.fetchMsg(+userId, type);
-        this.MsgIsLoad = false;
-        setTimeout(() => {
-          this.scrollDown(userId);
-        }, 100)
 
-        
-      // }, 100)
-    } else {
-      // if(this.fetch) {
-      //   this.fetch.unsubscribe()
-      // }
-      this.selectedMsg = undefined
+        // }, 300);
+        // this.TimeoutGenerale = setTimeout(() => {
+
+
+        // }, 100)
+      } else {
+        // this.selectedMsg = undefined
+      }
     }
   }
 
@@ -88,66 +126,82 @@ export class MessagePage implements OnInit {
     this.file.downloadFile(fileUrl, name)
   }
 
-  sendMsg($event) {
-    const msgListing = $event.target.closest("ion-footer").previousElementSibling
-    console.log(msgListing);
-    
-  //   <ion-row class="authUser">
+  sendMsg($event, isLus: boolean) {
+    $event.stopPropagation();
 
-  //   <ion-col class="col-image" size="2" *ngIf="+m.sendBy === 1">
-  //     <ion-img src="assets/Ellipse1.png"></ion-img>
-  //   </ion-col>
-  // </ion-row>
     if (!!this.textVal) {
       let userId = this.group.value
-      if(isNaN(+userId)) {
+      if (isNaN(+userId)) {
         userId = (<string>userId).split('-')[1]
       }
+      this.selectedOne = +userId
       let text = this.textVal
-      this.createLine(msgListing)
-      this.createRow(msgListing)
+      this.createRow(+userId, isLus)
       this.scrollDown(+userId)
 
-      this.messageService.sendMessage(+userId, "administration", text, null ,"send").subscribe((elt) => {
+
+      this.messageService.sendMessage(+userId, "administration", text, null, "send").subscribe((elt) => {
 
       })
     }
   }
 
-  createLine(parent : HTMLElement) {
-    let div = this.renderer.createElement("div");
-    this.renderer.setAttribute(div, "class", "line")
-    this.renderer.appendChild(parent, div)
-  } 
+  async selectImages() {
+    // this.ImagePick.hasReadPermission().then(elt => {
+    //   console.log(elt);
+      
+    // })
+    // this.file.pickImagesFromGallery()
+    console.log("open image picker")
+    const permission = await this.ImagePick.hasReadPermission()
+      console.log("permission ", permission);
+  
+      if (permission === false) {
+        const reqPerm = this.ImagePick.requestReadPermission()
+        console.log("reqpermission ", reqPerm);
+      } else {
+        let options: ImagePickerOptions = {
+          maximumImagesCount: 6
+        }
+        let Images = this.ImagePick.getPictures(options)
+        console.log(Images);
+  
+      }
 
-  createRow(parent : HTMLElement) {
-    let row = this.renderer.createElement("ion-row");
-    this.renderer.setAttribute(row, "class", "authUser")
+  }
 
+  createRow(val: number, isLus: boolean) {
+    let d = new Date()
+    let newMessage = {
+      date: this.datePipe.transform(d, "H:mm"),
+      hasFile: false,
+      message: this.textVal,
+      par: "",
+      sendBy: "1"
+    }
+    if (isLus) {
 
-    let col = this.renderer.createElement("ion-col")
-    this.renderer.setAttribute(col, "size", "9")
-    let message = this.renderer.createElement("div");
-    this.renderer.setAttribute(message, "class", "message")
-    const text = this.renderer.createText(this.textVal);
+      this.messagesLus.forEach((elt) => {
+        if (elt.Id == val) {
+          elt.lastMsg = this.textVal
+        }
+      })
+    } else {
+
+      this.messagesNonLus.forEach((elt) => {
+        if (elt.Id == val) {
+          elt.lastMsg = this.textVal
+        }
+      })
+
+    }
     this.textVal = null
-    this.renderer.appendChild(message, text)
-    this.renderer.appendChild(col, message)
+    console.log(this.selectedMsg);
 
-    this.renderer.appendChild(row, col)
+    this.selectedMsg.push(newMessage)
+  }
 
+  async presentPopover(e: Event) {
 
-    let colImg = this.renderer.createElement("ion-col")
-    this.renderer.setAttribute(colImg, "size", "2")
-    this.renderer.setAttribute(colImg, "class", "col-image")
-
-
-    let Img = this.renderer.createElement("ion-img")
-    this.renderer.setAttribute(Img, "src", "assets/Ellipse1.png")
-    this.renderer.appendChild(colImg, Img)
-    this.renderer.appendChild(row, colImg)
-
-
-    this.renderer.appendChild(parent, row)
   }
 }

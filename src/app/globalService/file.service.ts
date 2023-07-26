@@ -4,7 +4,8 @@ import { ApiService } from './api.service';
 import { HttpClient } from '@angular/common/http';
 // import { apiUrl, schoolName } from 'src/environments/environment';
 import { Media } from '@capacitor-community/media'
-import { AlertController } from '@ionic/angular';
+import { AlertController, LoadingController } from '@ionic/angular';
+import { Camera, GalleryImageOptions } from '@capacitor/camera';
 // import { ImagePicker } from '@awesome-cordova-plugins/image-picker/ngx';
 // import { ImagePickerOptions } from '@awesome-cordova-plugins/image-picker';
 
@@ -21,6 +22,7 @@ export class FileService {
     private apiservice: ApiService,
     private http: HttpClient,
     private alertCtrl: AlertController,
+    private loader : LoadingController
     // private ImagePicker : ImagePicker
   ) {
       this.apiUrl = apiservice.apiUrl
@@ -173,23 +175,48 @@ export class FileService {
   }
 
 
-  // async pickImagesFromGallery() {
-  //   console.log("open image picker")
-  //   const permission = await this.ImagePicker.hasReadPermission()
-  //   console.log("permission ", permission);
-    
-  //   if(permission === false) {
-  //     const reqPerm = await this.ImagePicker.requestReadPermission()
-  //     console.log("reqpermission ", reqPerm);
-  //   } else {
-  //     let options : ImagePickerOptions = {
-  //       maximumImagesCount: 6
-  //     }
-  //     let Images = this.ImagePicker.getPictures(options)
-  //     console.log(Images);
-      
-  //   }
-    
-  // }
+  async pickImages() {
+    let options : GalleryImageOptions = {
+      correctOrientation: true
+    }
 
+    let Picker = await Camera.pickImages(options)
+    // console.log(Picker.photos);
+    const files = [];
+    Picker.photos.forEach(async (image, i) => {
+      // const response = await fetch(image.webPath);
+      // let fileReader = new FileReader()
+      const blob = new Blob([image.webPath], { type: image.format });
+      // fileReader.readAsDataURL(blob)
+      // fileReader.onload = () => {
+        // const file = new File([blob], `${Date.now()}${i}.${image.format}`, { type: blob.type }) 
+        files.push(blob)      
+        // console.log(blob);
+        // console.log(image.webPath);
+        // }
+    })
+
+    return files
+  }
+  // async pickImages() {
+  //   let options: GalleryImageOptions = {
+  //     correctOrientation: true
+  //   };
+  
+  //   let Picker = await Camera.pickImages(options);
+    
+  //   const files = await Promise.all(Picker.photos.map(async (image, i) => {
+  //     return new Promise((resolve) => {
+  //       let fileReader = new FileReader();
+  //       const blob = new Blob([image.webPath], { type: image.format });
+  //       fileReader.readAsDataURL(blob);
+  //       fileReader.onload = () => {
+  //         const file = new File([fileReader.result], `${Date.now()}${i}.${image.format}`, { type: blob.type });
+  //         resolve(file);
+  //       };
+  //     });
+  //   }));
+  
+  //   return files;
+  // }
 }

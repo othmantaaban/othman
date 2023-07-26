@@ -3,9 +3,7 @@ import { MessageService } from './service/message.service';
 import { IonAccordionGroup, PopoverController } from '@ionic/angular';
 import { FileService } from '../globalService/file.service';
 import { DatePipe } from '@angular/common';
-import { ImagePicker } from '@awesome-cordova-plugins/image-picker/ngx';
-import { ImagePickerOptions } from '@awesome-cordova-plugins/image-picker';
-// import { ImagePickerOriginal } from '@awesome-cordova-plugins/image-picker';
+
 
 @Component({
   selector: 'app-message',
@@ -19,6 +17,7 @@ export class MessagePage implements OnInit {
   public selectedMsg: Array<any> = undefined;
   public MsgIsLoad: Boolean = false;
   public textVal: string;
+  public filesVal: Array<File> = null;
   private observe;
   public selectedOne: number = undefined;
 
@@ -28,7 +27,6 @@ export class MessagePage implements OnInit {
     private popoverController: PopoverController,
     private cdr: ChangeDetectorRef,
     private datePipe: DatePipe,
-    private ImagePick : ImagePicker
   ) {
     // const x = ImagePicker
     // ImagePicker.getPictures({
@@ -122,14 +120,14 @@ export class MessagePage implements OnInit {
     }
   }
 
-  downloadFile(fileUrl: string, name) {
+   downloadFile(fileUrl: string, name) {
     this.file.downloadFile(fileUrl, name)
   }
 
   sendMsg($event, isLus: boolean) {
     $event.stopPropagation();
 
-    if (!!this.textVal) {
+    if (!!this.textVal || !!this.filesVal) {
       let userId = this.group.value
       if (isNaN(+userId)) {
         userId = (<string>userId).split('-')[1]
@@ -140,34 +138,20 @@ export class MessagePage implements OnInit {
       this.scrollDown(+userId)
 
 
-      this.messageService.sendMessage(+userId, "administration", text, null, "send").subscribe((elt) => {
+      this.messageService.sendMessage(+userId, "administration", text, this.filesVal, "send").subscribe((elt) => {
 
       })
     }
   }
 
-  async selectImages() {
-    // this.ImagePick.hasReadPermission().then(elt => {
-    //   console.log(elt);
-      
-    // })
-    // this.file.pickImagesFromGallery()
-    console.log("open image picker")
-    const permission = await this.ImagePick.hasReadPermission()
-      console.log("permission ", permission);
-  
-      if (permission === false) {
-        const reqPerm = this.ImagePick.requestReadPermission()
-        console.log("reqpermission ", reqPerm);
-      } else {
-        let options: ImagePickerOptions = {
-          maximumImagesCount: 6
-        }
-        let Images = this.ImagePick.getPictures(options)
-        console.log(Images);
-  
+  async selectImages(event = null) {
+    this.filesVal = await this.file.pickImages()
+    console.log(this.filesVal);
       }
 
+  loadData(){
+    console.log("infinity");
+    
   }
 
   createRow(val: number, isLus: boolean) {
@@ -202,6 +186,6 @@ export class MessagePage implements OnInit {
   }
 
   async presentPopover(e: Event) {
-
+    
   }
 }

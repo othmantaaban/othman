@@ -134,7 +134,6 @@
           Aucune donnée disponible
         </ion-col>
       </ion-row>
-    <ng-container *ngIf="messagesLus !== undefined">
       <ion-row class="header-title">
         <ion-col size="12">
           <ion-title mode="md" class="title-style"> Messages lus </ion-title>
@@ -179,8 +178,11 @@
             </div>
             <ion-grid slot="content" class="accordion-content">
               <ng-container *ngIf="+item.Id === +selectedOne"></ng-container>
-              <div (mousedown)="$event.preventDefault()" class="messages" [id]="'messages' + item.Id">
+              <ion-content (mousedown)="$event.preventDefault()" class="messages" [id]="'messages' + item.Id">
                 <ng-container *ngIf="!MsgIsLoad">
+                  <ion-infinite-scroll position="top">
+                    <ion-infinite-scroll-content loadingText="Please wait..." loadingSpinner="bubbles"></ion-infinite-scroll-content>
+                  </ion-infinite-scroll>
                   <ng-container *ngFor="let m of selectedMsg; let i = index">
                     <ion-row
                       [class.otherUser]="+m.sendBy !== 1"
@@ -226,7 +228,7 @@
                   
                   <ion-img src="assets/spinner.svg"></ion-img>
                 </span>
-              </div>
+              </ion-content>
               <ion-footer mode="md">
                 <ion-row>
                   <ion-col sizeSm="11" sizeMd="11" sizeLg="11" class="input">
@@ -267,7 +269,6 @@
           Aucune donnée disponible
         </ion-col>
       </ion-row>
-    </ng-container>
   </ion-grid>
 </ion-accordion-group>
 

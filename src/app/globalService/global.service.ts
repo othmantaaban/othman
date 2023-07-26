@@ -1,4 +1,4 @@
-import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Observer, Subject } from 'rxjs'
 import { io } from 'socket.io-client';
@@ -10,6 +10,7 @@ export class GlobalService {
   private url = 'http://localhost/school_23/botiapi/';
   private subject = Subject<MessageEvent>
   private socket: any;
+  private headers : HttpHeaders = new HttpHeaders({'Content-Type': "multipart/form-data"})
   constructor(private _http: HttpClient) {
    }
 
@@ -54,7 +55,7 @@ export class GlobalService {
     let req;
     if (params !== null) {
       const httpParams = this.buildParams(params);
-      req = this._http.get(`${this.url}${endPoint}`, { params: httpParams });
+      req = this._http.get(`${this.url}${endPoint}`, { params: httpParams, headers: this.headers });
     } else {
       req = this._http.get(`${this.url}${endPoint}`);
     }
@@ -75,16 +76,28 @@ export class GlobalService {
   postHttpClient(endPoint: string, request: Object, params: Object = null) {
     let req;
     let formData = new FormData();
-    console.log(request);
     for (var key in request) {
-      formData.append(key, request[key]);
+      console.log(request);
+      console.log(request[key]);
+      
+      if(Array.isArray(request[key]) &&  this.isArrayOfFileObjects(request[key])) {
+          request[key].forEach((elt, i) => {
+            formData.append(`files[]`, elt)
+          })
+          
+      } else {
+        formData.append(key, request[key]);
+      }
     }
-
+    console.log(formData.getAll("files"));
+    
     if (params !== null) {
       const httpParams = this.buildParams(params);
       req = this._http.post(`${this.url}${endPoint}`, formData, {
         params: httpParams,
+        // headers: this.headers
       });
+
     } else {
       req = this._http.post(`${this.url}${endPoint}`, formData);
     }
@@ -92,5 +105,14 @@ export class GlobalService {
     return req;
   }
 
+
+  private isArrayOfFileObjects(arr: any[]): boolean {
+    for (const item of arr) {
+      if (!(item instanceof File)) {
+        return false;
+      }
+    }
+    return true;
+  }
 
 }

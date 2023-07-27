@@ -175,48 +175,47 @@ export class FileService {
   }
 
 
+  // async pickImages() {
+  //   let options : GalleryImageOptions = {
+  //     correctOrientation: true
+  //   }
+
+  //   let Picker = await Camera.pickImages(options)
+  //   // console.log(Picker.photos);
+  //   const files = [];
+  //   // const files = new FormData();
+  //   Picker.photos.forEach(async (image, i) => {
+  //     // const blob = new Blob([image.webPath], { type: image.format });
+  //     console.log(image.format);
+      
+  //     const file = new File([image.webPath], `${Date.now()}${i}.${image.format}`, { type: `image/${image.format}`, lastModified: new Date().getTime() }) 
+  //     files.push(file)      
+  //   })
+
+  //   return files
+  // }
+
   async pickImages() {
     let options : GalleryImageOptions = {
       correctOrientation: true
     }
 
     let Picker = await Camera.pickImages(options)
-    // console.log(Picker.photos);
-    const files = [];
+    const files = []
     Picker.photos.forEach(async (image, i) => {
-      // const response = await fetch(image.webPath);
-      // let fileReader = new FileReader()
-      const blob = new Blob([image.webPath], { type: image.format });
-      // fileReader.readAsDataURL(blob)
-      // fileReader.onload = () => {
-        // const file = new File([blob], `${Date.now()}${i}.${image.format}`, { type: blob.type }) 
-        files.push(blob)      
-        // console.log(blob);
-        // console.log(image.webPath);
-        // }
-    })
+      const res = await fetch(image.webPath)
+      console.log(res);
 
+      const blob = await res.blob()
+      console.log(blob);
+      
+      const file = new File([blob], `${Date.now()}${i}.${image.format}`, {
+        type: blob.type,
+        lastModified: new Date().getTime(),
+      });
+      files.push(file)
+    })
+    console.log(files);
     return files
   }
-  // async pickImages() {
-  //   let options: GalleryImageOptions = {
-  //     correctOrientation: true
-  //   };
-  
-  //   let Picker = await Camera.pickImages(options);
-    
-  //   const files = await Promise.all(Picker.photos.map(async (image, i) => {
-  //     return new Promise((resolve) => {
-  //       let fileReader = new FileReader();
-  //       const blob = new Blob([image.webPath], { type: image.format });
-  //       fileReader.readAsDataURL(blob);
-  //       fileReader.onload = () => {
-  //         const file = new File([fileReader.result], `${Date.now()}${i}.${image.format}`, { type: blob.type });
-  //         resolve(file);
-  //       };
-  //     });
-  //   }));
-  
-  //   return files;
-  // }
 }

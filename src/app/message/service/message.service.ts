@@ -25,8 +25,8 @@ export class MessageService {
     return x
   }
 
-  getConversationMsg(otherId : number, type) {
-    let x = this.global.getHttpClient(this.endPoint, { otherId : otherId, type: type })
+  getConversationMsg(otherId : number, type, limit : number = 0) {
+    let x = this.global.getHttpClient(this.endPoint, { otherId : otherId, type: type, limit:limit })
     return x
     // return this.messages;
     // Observable.interval(1000)
@@ -42,11 +42,13 @@ export class MessageService {
   }
 
   sendMessage(id: number , channel : string, message : string = null, files : Array<File> = null, type : string = null){
-    // if(!!message || !!files) {
-      console.log(message);
-      const fileForm = files
+      let hasMsg = false;
+      if(message) {
+        console.log(message);
+        hasMsg = true
+      }
       
-      return this.global.postHttpClient(this.endPoint, { message : message, files: fileForm, channel : channel, Reqtype: type }, { converatation: id })
+      return this.global.postHttpClient(this.endPoint, { message : message, files: files, hasMsg: hasMsg, channel : channel, Reqtype: type }, { converatation: id })
     // }
 
   }

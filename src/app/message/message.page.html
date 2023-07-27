@@ -44,59 +44,65 @@
               </div>
             </div>
             <ion-grid slot="content" class="accordion-content">
-              <ng-container *ngIf="+item.Id === +selectedOne"></ng-container>
-              <div (mousedown)="$event.preventDefault()" class="messages" [id]="'messages' + item.Id">
-                <ng-container *ngIf="!MsgIsLoad">
-                  <ng-container *ngFor="let m of selectedMsg; let i = index">
-                    <ion-row
-                      [class.otherUser]="+m.sendBy !== 1"
-                      [class.authUser]="+m.sendBy === 1"
-                    >
-                      <ion-col
-                        [size]="+m.sendBy === 1 ? 9 : 10"
-                        [offset]="+m.sendBy !== 1 && 2"
+              <ng-container *ngIf="+item.Id === +selectedOne">
+                <ion-content (mousedown)="$event.preventDefault()" class="messages" [id]="'messages' + item.Id" #messages>
+                  <ng-container *ngIf="!MsgIsLoad">
+                    <ion-infinite-scroll #infinity threshold="0px" position="top"  (ionInfinite)="loadMsg($event)" >
+                      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+                    </ion-infinite-scroll>
+                    <ng-container *ngFor="let m of selectedMsg; let i = index">
+                      <ion-row
+                        [class.otherUser]="+m.sendBy !== 1"
+                        [class.authUser]="+m.sendBy === 1"
                       >
-                        <div class="message">{{ m.message }}</div>
-                        <span class="download" *ngFor="let f of m.hasFile">
-                          <ion-img
-                            [src]="f.fileType"
-                            class="fileType"
-                            [class]="f.type === 'pdf' ? 'pdf' : f.type === 'docx' ? 'word' : 'otherType'"
-                          ></ion-img>
-                          <div class="fileName">{{ f.fileName }}</div>
-                          <ion-img
-                            src="assets/downloads.svg"
-                            class="fileBtn"
-                            (click)="downloadFile(f.file ,f.fileName)"
-                          ></ion-img>
-                        </span>
-                        <div class="other" >
-                          <span class="par" *ngIf="+m.sendBy !== 1">
-                            Par : {{ m.par }} ( <span *ngIf="m.role">Pére</span> <span *ngIf="!m.role">Mére</span>)
+                        <ion-col
+                          [size]="+m.sendBy === 1 ? 9 : 10"
+                          [offset]="+m.sendBy !== 1 && 2"
+                        >
+                          <div class="message">{{ m.message }}</div>
+                          <span class="download" *ngFor="let f of m.hasFile">
+                            <ion-img
+                              [src]="f.fileType"
+                              class="MsgfileType"
+                              ></ion-img>
+                              <!-- [class]="f.type === 'pdf' ? 'pdf' : f.type === 'docx' ? 'word' : 'otherType'" -->
+                            <div class="fileName">{{ f.fileName }}</div>
+                            <ion-img
+                              src="assets/downloads.svg"
+                              class="fileBtn"
+                              (click)="downloadFile(f.file ,f.fileName)"
+                            ></ion-img>
                           </span>
-                          <span class="time">{{ m.date }}</span>
-                        </div>
-                      </ion-col>
-                      <ion-col class="col-image" size="2" *ngIf="+m.sendBy === 1">
-                        <ion-img src="assets/Ellipse1.png"></ion-img>
-                      </ion-col>
-                    </ion-row>
-                    <div
-                      class="line"
-                      *ngIf="selectedMsg.length - 1 !== i"
-                    ></div>
+                          <div class="other" >
+                            <span class="par" *ngIf="+m.sendBy !== 1">
+                              Par : {{ m.par }} ( <span *ngIf="m.role">Pére</span> <span *ngIf="!m.role">Mére</span>)
+                            </span>
+                            <span class="time">{{ m.date }}</span>
+                          </div>
+                        </ion-col>
+                        <ion-col class="col-image" size="2" *ngIf="+m.sendBy === 1">
+                          <ion-img src="assets/Ellipse1.png"></ion-img>
+                        </ion-col>
+                      </ion-row>
+                      <div
+                        class="line"
+                        *ngIf="selectedMsg.length - 1 !== i"
+                      ></div>
+                    </ng-container>
                   </ng-container>
-                </ng-container>
-                
-                <span *ngIf="MsgIsLoad" class="msgLoading">
                   
-                  <ion-img src="assets/spinner.svg"></ion-img>
-                </span>
-              </div>
+                  <span *ngIf="MsgIsLoad" class="msgLoading">
+                    
+                    <ion-img src="assets/spinner.svg"></ion-img>
+                  </span>
+                </ion-content>
+              </ng-container>
               <ion-footer mode="md">
                 <ion-row>
                   <ion-col sizeSm="11" sizeMd="11" sizeLg="11" class="input">
-                    <ion-icon [id]="'click-trigger' + item.Id" name="attach-outline"></ion-icon>
+                    <ion-button [id]="'click-trigger' + item.Id" >
+                      <ion-icon name="attach-outline"></ion-icon>
+                    </ion-button>
                     <!-- <ion-button >Left-Click Me</ion-button> -->
                     <ion-popover [trigger]="'click-trigger' + item.Id" side="top" alignment="start" triggerAction="click">
                       <ng-template>
@@ -107,7 +113,7 @@
                       </ng-template>
                     </ion-popover>
                     <ion-textarea
-                      placeholder="taper un message"
+                      placeholder="Taper un message"
                       style="margin: 0; height: 40px; --highlight-color: none"
                       [(ngModel)]="textVal"
                     ></ion-textarea>
@@ -177,71 +183,73 @@
               </div>
             </div>
             <ion-grid slot="content" class="accordion-content">
-              <ng-container *ngIf="+item.Id === +selectedOne"></ng-container>
-              <ion-content (mousedown)="$event.preventDefault()" class="messages" [id]="'messages' + item.Id">
-                <ng-container *ngIf="!MsgIsLoad">
-                  <ion-infinite-scroll position="top">
-                    <ion-infinite-scroll-content loadingText="Please wait..." loadingSpinner="bubbles"></ion-infinite-scroll-content>
-                  </ion-infinite-scroll>
-                  <ng-container *ngFor="let m of selectedMsg; let i = index">
-                    <ion-row
-                      [class.otherUser]="+m.sendBy !== 1"
-                      [class.authUser]="+m.sendBy === 1"
-                    >
-                      <ion-col
-                        [size]="+m.sendBy === 1 ? 9 : 10"
-                        [offset]="+m.sendBy !== 1 && 2"
+              <ng-container *ngIf="+item.Id === +selectedOne">
+                <ion-content (mousedown)="$event.preventDefault()" class="messages" [id]="'messages' + item.Id">
+                  <ng-container *ngIf="!MsgIsLoad">
+                    <ion-infinite-scroll #infinity distance="1%" (ionInfinite)="loadMsg($event)" >
+                      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+                    </ion-infinite-scroll>
+                    <ng-container *ngFor="let m of selectedMsg; let i = index">
+                      <ion-row
+                        [class.otherUser]="+m.sendBy !== 1"
+                        [class.authUser]="+m.sendBy === 1"
                       >
-                        <div class="message">{{ m.message }}</div>
-                        <span class="download" *ngFor="let f of m.hasFile">
-                          <ion-img
-                            [src]="f.fileType"
-                            class="fileType"
-                            [class]="f.type === 'pdf' ? 'pdf' : f.type === 'docx' ? 'word' : 'otherType'"
-                          ></ion-img>
-                          <div class="fileName">{{ f.fileName }}</div>
-                          <ion-img
-                            src="assets/downloads.svg"
-                            class="fileBtn"
-                            (click)="downloadFile(f.file ,f.fileName)"
-                          ></ion-img>
-                        </span>
-                        <div class="other" >
-                          <span class="par" *ngIf="+m.sendBy !== 1">
-                            Par : {{ m.par }} ( <span *ngIf="m.role">Pére</span> <span *ngIf="!m.role">Mére</span>)
+                        <ion-col
+                          [size]="+m.sendBy === 1 ? 9 : 10"
+                          [offset]="+m.sendBy !== 1 && 2"
+                        >
+                          <div class="message">{{ m.message }}</div>
+                          <span class="download" *ngFor="let f of m.hasFile">
+                            <ion-img
+                              [src]="f.fileType"
+                              class="MsgfileType"
+                              ></ion-img>
+                            <div class="fileName">{{ f.fileName }}</div>
+                            <ion-img
+                              src="assets/downloads.svg"
+                              class="fileBtn"
+                              (click)="downloadFile(f.file ,f.fileName)"
+                            ></ion-img>
                           </span>
-                          <span class="time">{{ m.date }}</span>
-                        </div>
-                      </ion-col>
-                      <ion-col class="col-image" size="2" *ngIf="+m.sendBy === 1">
-                        <ion-img src="assets/Ellipse1.png"></ion-img>
-                      </ion-col>
-                    </ion-row>
-                    <div
-                      class="line"
-                      *ngIf="selectedMsg.length - 1 !== i"
-                    ></div>
+                          <div class="other" >
+                            <span class="par" *ngIf="+m.sendBy !== 1">
+                              Par : {{ m.par }} ( <span *ngIf="m.role">Pére</span> <span *ngIf="!m.role">Mére</span>)
+                            </span>
+                            <span class="time">{{ m.date }}</span>
+                          </div>
+                        </ion-col>
+                        <ion-col class="col-image" size="2" *ngIf="+m.sendBy === 1">
+                          <ion-img src="assets/Ellipse1.png"></ion-img>
+                        </ion-col>
+                      </ion-row>
+                      <div
+                        class="line"
+                        *ngIf="selectedMsg.length - 1 !== i"
+                      ></div>
+                    </ng-container>
                   </ng-container>
-                </ng-container>
-                
-                <span *ngIf="MsgIsLoad" class="msgLoading">
                   
-                  <ion-img src="assets/spinner.svg"></ion-img>
-                </span>
-              </ion-content>
+                  <span *ngIf="MsgIsLoad" class="msgLoading">
+                    
+                    <ion-img src="assets/spinner.svg"></ion-img>
+                  </span>
+                </ion-content>
+              </ng-container>
               <ion-footer mode="md">
                 <ion-row>
                   <ion-col sizeSm="11" sizeMd="11" sizeLg="11" class="input">
-                    <ion-icon [id]="'click-trigger' + item.Id" name="attach-outline"></ion-icon>
+                    <ion-button [id]="'click-trigger' + item.Id" >
+                      <ion-icon name="attach-outline"></ion-icon>
+                    </ion-button>
                     <!-- <ion-button >Left-Click Me</ion-button> -->
-                    <ion-popover [trigger]="'click-trigger' + item.Id" side="right" alignment="end" triggerAction="click">
+                    <ion-popover [trigger]="'click-trigger' + item.Id" triggerAction="click">
                       <ng-template>
                         <ion-button expand="block" (click)="selectImages()">Image</ion-button>
                           <ion-button expand="block">document</ion-button>
                       </ng-template>
                     </ion-popover>
                     <ion-textarea
-                      placeholder="taper un message"
+                      placeholder="Taper un message"
                       style="margin: 0; height: 40px; --highlight-color: none"
                       [(ngModel)]="textVal"
                       (ionChange)="$event.stopPropagation()"

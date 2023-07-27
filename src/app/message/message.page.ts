@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { MessageService } from './service/message.service';
-import { IonAccordionGroup, PopoverController } from '@ionic/angular';
+import { InfiniteScrollCustomEvent, IonAccordionGroup, IonContent, IonInfiniteScroll, IonRefresher, PopoverController } from '@ionic/angular';
 import { FileService } from '../globalService/file.service';
 import { DatePipe } from '@angular/common';
 
@@ -12,12 +12,17 @@ import { DatePipe } from '@angular/common';
 })
 export class MessagePage implements OnInit {
   @ViewChild("messageGroup") group: IonAccordionGroup
+  @ViewChild("messages") content : IonContent
+  @ViewChild("infinity") infinity : IonInfiniteScroll
+  // @ViewChild("") refresher : IonRefresher
+
   public messagesNonLus: Array<any> = [];
   public messagesLus: Array<any> = [];
   public selectedMsg: Array<any> = undefined;
   public MsgIsLoad: Boolean = false;
+  public limit: Boolean = true;
   public textVal: string;
-  public filesVal: Array<File> = null;
+  public filesVal = null;
   private observe;
   public selectedOne: number = undefined;
 
@@ -28,18 +33,21 @@ export class MessagePage implements OnInit {
     private cdr: ChangeDetectorRef,
     private datePipe: DatePipe,
   ) {
-    // const x = ImagePicker
-    // ImagePicker.getPictures({
-    //   maximumImagesCount: 2
-    // });
-    // ImagePicker.getPictures
-    
-   }
+  }
   ngOnInit() {
 
   }
   ionViewWillEnter() {
     this.initialize()
+  }
+
+  ionViewWillLeave() {
+    // this.observe.unsubscribe()
+    this.observe = undefined
+    this.selectedMsg = undefined;
+    this.MsgIsLoad = false
+    this.selectedOne = undefined
+    this.group.value = undefined
   }
 
   initialize() {
@@ -51,32 +59,73 @@ export class MessagePage implements OnInit {
     })
   }
 
-  scrollDown(id) {
-    setTimeout(() => {
-      let element = document.getElementById(`messages${id}`);
-
-      if (element != null) {
-        // console.log(element.scrollHeight);
-        // element.scroll
-
-        element.scrollTop = element.scrollHeight + 2000;
+  loadMsg(event) {
+    console.log(event);
+    // (event as InfiniteScrollCustomEvent).target.complete()
+    (event as InfiniteScrollCustomEvent).target.complete
+    
+    const other = this.group.value as string
+    let type = null
+    let userId = other
+    if (isNaN(+other)) {
+      type = 'eleve'
+      userId = other.split('-')[1]
+    }
+    let limit = this.selectedMsg.length
+    this.observe = this.messageService.getConversationMsg(+userId, type, limit)
+    this.observe.subscribe(async (elt) => {
+      // console.log(elt);
+      if(elt.length < 10) {
+        this.infinity.disabled = true
+        
       }
-    }, 100)
+  
+      
+      this.selectedMsg = [...elt, ...this.selectedMsg]
+      console.log("before");
+      console.log(this.selectedMsg);
+      // setTimeout(async () => {
+        await this.infinity.complete();
+      // }, 1000)
+      console.log("after");
+
+
+    })
+  }
+
+  async scrollDown(elt = null) {
+      if (this.content != null) {
+        console.log(this.content);
+
+
+        // if(elt.length < 10) {
+        //   this.infinity.disabled = true            
+        // } else {
+        //   this.infinity.disabled = false
+        //   // this.infinity.complete()
+        // }
+        this.content.scrollToBottom()
+        // console.log(await this.infinity.complete());
+        
+      }
   }
 
   private fetchMsg(userTo: number, type: string = null) {
 
     this.observe = this.messageService.getConversationMsg(userTo, type)
-    this.observe.subscribe((elt) => {
+    this.observe.subscribe((elt) => { 
       this.selectedMsg = elt
       console.log(this.selectedMsg);
 
       setTimeout(() => {
         this.MsgIsLoad = false;
-        this.cdr.detectChanges();
+        // const infinity = document.getElementById("infinity") 
+      
         setTimeout(() => {
-          this.scrollDown(userTo);
+        
+          this.scrollDown(elt);
         }, 100)
+        this.cdr.detectChanges();
       }, 1000);
     })
 
@@ -106,25 +155,21 @@ export class MessagePage implements OnInit {
           type = 'eleve'
           userId = other.split('-')[1]
         }
+        this.selectedOne = +userId
 
         this.fetchMsg(+userId, type);
 
-        // }, 300);
-        // this.TimeoutGenerale = setTimeout(() => {
-
-
-        // }, 100)
       } else {
         // this.selectedMsg = undefined
       }
     }
   }
 
-   downloadFile(fileUrl: string, name) {
+  downloadFile(fileUrl: string, name) {
     this.file.downloadFile(fileUrl, name)
   }
 
-  sendMsg($event, isLus: boolean) {
+  sendMsg($event, isLus: boolean, channel : string = null) {
     $event.stopPropagation();
 
     if (!!this.textVal || !!this.filesVal) {
@@ -133,9 +178,13 @@ export class MessagePage implements OnInit {
         userId = (<string>userId).split('-')[1]
       }
       this.selectedOne = +userId
+      console.log(this.selectedOne);
+      
       let text = this.textVal
       this.createRow(+userId, isLus)
-      this.scrollDown(+userId)
+      setTimeout(() => {
+        this.scrollDown()
+      }, 100);
 
 
       this.messageService.sendMessage(+userId, "administration", text, this.filesVal, "send").subscribe((elt) => {
@@ -145,9 +194,10 @@ export class MessagePage implements OnInit {
   }
 
   async selectImages(event = null) {
-    this.filesVal = await this.file.pickImages()
+    let images = await this.file.pickImages()
+    this.filesVal = [...this.filesVal, ...images]
     console.log(this.filesVal);
-      }
+    }
 
   loadData(){
     console.log("infinity");
@@ -180,6 +230,7 @@ export class MessagePage implements OnInit {
 
     }
     this.textVal = null
+    this.filesVal = []
     console.log(this.selectedMsg);
 
     this.selectedMsg.push(newMessage)

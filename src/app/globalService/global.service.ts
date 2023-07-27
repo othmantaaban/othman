@@ -1,4 +1,4 @@
-import { HttpClient, HttpContext, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Observer, Subject } from 'rxjs'
 import { io } from 'socket.io-client';
@@ -10,7 +10,6 @@ export class GlobalService {
   private url = 'http://localhost/school_23/botiapi/';
   private subject = Subject<MessageEvent>
   private socket: any;
-  private headers : HttpHeaders = new HttpHeaders({'Content-Type': "multipart/form-data"})
   constructor(private _http: HttpClient) {
    }
 
@@ -55,7 +54,7 @@ export class GlobalService {
     let req;
     if (params !== null) {
       const httpParams = this.buildParams(params);
-      req = this._http.get(`${this.url}${endPoint}`, { params: httpParams, headers: this.headers });
+      req = this._http.get(`${this.url}${endPoint}`, { params: httpParams });
     } else {
       req = this._http.get(`${this.url}${endPoint}`);
     }
@@ -95,7 +94,6 @@ export class GlobalService {
       const httpParams = this.buildParams(params);
       req = this._http.post(`${this.url}${endPoint}`, formData, {
         params: httpParams,
-        // headers: this.headers
       });
 
     } else {

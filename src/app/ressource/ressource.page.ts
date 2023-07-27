@@ -86,7 +86,6 @@ export class RessourcePage implements OnInit {
   valideRessource($event, ressourceId: number, action: string = null) {
     const data = this.ressourcesService.setRessourceValid(ressourceId, action);
     data.subscribe((res: any) => {
-      // this.validateressourceAnimation($event, res)
       const eltRef = $event.target.closest('ion-col');
       this.notificationService.validateAnimation(eltRef, () => {
         this.initialize()
